@@ -85,7 +85,7 @@
     const form = event.target;
     if (!(form instanceof HTMLFormElement) || form.id !== 'login-form') return;
     const data = new FormData(form); const email = String(data.get('email') || '').trim().toLowerCase(); const password = String(data.get('password') || '');
-    const account = load(APPROVED_KEY, []).find((x) => x.email === email && x.password === password);
+    const account = load(APPROVED_KEY, []).find((x) => x.email === email && x.password === password && !x.disabled);
     if (!account) return;
     event.preventDefault(); event.stopImmediatePropagation();
     save(SESSION_KEY, {email:account.email,name:account.name,role:account.role,region:account.region}); location.reload();
