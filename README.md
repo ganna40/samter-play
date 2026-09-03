@@ -10,4 +10,4 @@ Demo accounts:
 
 This repository contains only the static browser demo. The FastAPI/PostgreSQL source remains in the private source repository.
 
-Deployment: GitHub Pages via Actions from the `new` branch.
+Deployment: GitHub Pages from the `new` branch root.
