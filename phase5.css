@@ -1,0 +1,16 @@
+.phase5-settlement-panel .section-head { align-items: center; }
+.phase5-amount-control { display: flex; gap: 6px; min-width: 210px; }
+.phase5-amount-control input { width: 120px; padding: 7px 8px; }
+.phase5-paid-ref { color: #496257; font-size: 12px; }
+.phase5-worker-grid { display: grid; gap: 12px; }
+.phase5-worker-card { display: flex; justify-content: space-between; gap: 18px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 15px; padding: 18px 20px; }
+.phase5-worker-card h3 { margin: 4px 0 5px; }
+.phase5-worker-card > div > span { color: var(--muted); font-size: 12px; }
+.phase5-worker-amount { display: grid; justify-items: end; gap: 6px; }
+.phase5-worker-amount strong { font-size: 20px; color: var(--green-900); }
+.phase5-worker-amount small { color: var(--muted); }
+.status-not_ready { background: #f1f5f9; color: #475569; }
+.status-payment_pending { background: #fff7db; color: #8a6208; }
+.status-paid { background: #dcfce7; color: #166534; }
+.status-on_hold { background: #fee2e2; color: #991b1b; }
+@media (max-width: 680px) { .phase5-worker-card { align-items: flex-start; } .phase5-worker-amount { justify-items: start; } }
