@@ -9,3 +9,5 @@ Demo accounts:
 - Worker: `worker@samter.kr` / `Worker1234!`
 
 This repository contains only the static browser demo. The FastAPI/PostgreSQL source remains in the private source repository.
+
+Deployment: GitHub Pages via Actions from the `new` branch.
