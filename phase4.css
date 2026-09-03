@@ -1,0 +1,21 @@
+.phase4-work-card { display: grid; gap: 14px; }
+.phase4-revision { padding: 12px; border-radius: 12px; background: #fff7ed; border: 1px solid #fed7aa; display: grid; gap: 4px; }
+.phase4-revision strong { color: #9a3412; }
+.phase4-revision span { color: #7c2d12; font-size: 13px; }
+.phase4-required, .phase4-evidence-head, .phase4-review-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: #64748b; }
+.phase4-required strong, .phase4-evidence-head span, .phase4-review-meta strong { color: #27352d; }
+.phase4-evidence-form { display: grid; gap: 9px; padding: 12px; background: #f8faf8; border: 1px solid #e4e9e4; border-radius: 12px; }
+.phase4-evidence-fields { display: grid; grid-template-columns: 160px 1fr; gap: 8px; }
+.phase4-submit-form { display: grid; gap: 9px; width: 100%; }
+.phase4-state-note { padding: 12px; border-radius: 10px; background: #f1f5f9; color: #475569; font-size: 13px; }
+.phase4-approved { background: #ecfdf5; color: #166534; }
+.phase4-rejected { background: #fef2f2; color: #991b1b; }
+.phase4-review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.phase4-review-card { display: grid; gap: 14px; }
+.phase4-result { background: #f8faf8; border-radius: 12px; padding: 12px; }
+.phase4-result p { margin: 6px 0 0; color: #5d6a62; line-height: 1.55; }
+.phase4-evidence-list { display: grid; gap: 9px; }
+.phase4-evidence-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; border: 1px solid #e5e9e5; border-radius: 12px; padding: 12px; }
+.phase4-evidence-row div { display: grid; gap: 3px; }
+.phase4-evidence-row span { color: #7b857f; font-size: 12px; }
+@media (max-width: 850px) { .phase4-review-grid { grid-template-columns: 1fr; } .phase4-evidence-fields { grid-template-columns: 1fr; } }
