@@ -1,0 +1,13 @@
+.application-box { width: 100%; }
+.application-box summary { list-style: none; cursor: pointer; text-align: center; }
+.application-box summary::-webkit-details-marker { display: none; }
+.application-form { margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; }
+.application-state { display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 12px 14px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
+.application-state span { color: #64748b; font-size: 13px; }
+.application-selected { background: #ecfdf5; border-color: #a7f3d0; }
+.application-rejected { background: #fff7ed; border-color: #fed7aa; }
+.application-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.application-history-grid { display: grid; gap: 12px; }
+.application-history-card { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 16px; background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; }
+.application-history-card h3 { margin: 4px 0 6px; }
+.application-history-card p { margin: 0; color: #64748b; }
