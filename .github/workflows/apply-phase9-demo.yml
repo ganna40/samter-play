@@ -1,0 +1,69 @@
+name: Apply verified Phase 9 demo
+
+on:
+  push:
+    branches:
+      - phase9-demo-staging
+    paths:
+      - '.github/workflows/apply-phase9-demo.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-phase9-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout staging payload
+        uses: actions/checkout@v4
+        with:
+          ref: phase9-demo-staging
+          fetch-depth: 0
+
+      - name: Reconstruct and verify demo files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object app.html)" = '8fd9cad4cea4c5a5fa9929d2a18dd3a046211bd0'
+          test "$(git hash-object phase8_demo.js)" = '9cc5756832187c3cd737092bd7827f51bc11c52f'
+          test "$(git hash-object phase9_demo.css)" = '9bdb5cd231db4e8bf6aa39d66a4d916f65c529ed'
+          cp app.html /tmp/app.html
+          cp phase8_demo.js /tmp/phase8_demo.js
+          cp phase9_demo.css /tmp/phase9_demo.css
+          cat .phase9demo/chunk-* > /tmp/phase9_demo.js.xz.b64
+          echo '06e108858dda7da8d9c0971ce96e698d04b0dbf9596498a94520dd6be9280e47  /tmp/phase9_demo.js.xz.b64' | sha256sum -c -
+          base64 -d /tmp/phase9_demo.js.xz.b64 > /tmp/phase9_demo.js.xz
+          xz -dc /tmp/phase9_demo.js.xz > /tmp/phase9_demo.js
+          echo '56ad063b6819e73418644f5806ada8ba4b34d58e2c7a583e6c28e44d13b55ea5  /tmp/phase9_demo.js' | sha256sum -c -
+          test "$(git hash-object /tmp/phase9_demo.js)" = '553b498b51064fd195a35f60e8a82b85b5b9e215'
+
+      - name: Apply demo to public branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin new
+          git checkout -B new origin/new
+          test "$(git rev-parse HEAD)" = '1d74120f136af7ec5ad0cb49554b7c39e8d4d4a1'
+          cp /tmp/app.html app.html
+          cp /tmp/phase8_demo.js phase8_demo.js
+          cp /tmp/phase9_demo.css phase9_demo.css
+          cp /tmp/phase9_demo.js phase9_demo.js
+          test "$(git hash-object app.html)" = '8fd9cad4cea4c5a5fa9929d2a18dd3a046211bd0'
+          test "$(git hash-object phase8_demo.js)" = '9cc5756832187c3cd737092bd7827f51bc11c52f'
+          test "$(git hash-object phase9_demo.css)" = '9bdb5cd231db4e8bf6aa39d66a4d916f65c529ed'
+          test "$(git hash-object phase9_demo.js)" = '553b498b51064fd195a35f60e8a82b85b5b9e215'
+          node --check phase8_demo.js
+          node --check phase9_demo.js
+          git diff --check
+
+      - name: Commit and push public Phase 9 demo
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'ganna40'
+          git config user.email '36022795+ganna40@users.noreply.github.com'
+          git add app.html phase8_demo.js phase9_demo.css phase9_demo.js
+          git commit -m 'feat: phase 9 membership roster demo'
+          test "$(git rev-list --count 1d74120f136af7ec5ad0cb49554b7c39e8d4d4a1..HEAD)" = '1'
+          git push origin HEAD:new
