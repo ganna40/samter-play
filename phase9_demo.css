@@ -1,0 +1,1 @@
+.phase9-demo-table{min-width:1280px}.phase9-demo-card{margin:18px 0}.phase9-demo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.phase9-demo-grid>div{padding:12px;border:1px solid #e5eaf0;border-radius:10px;background:#fbfcfd}@media(max-width:700px){.phase9-demo-grid{grid-template-columns:1fr}}
