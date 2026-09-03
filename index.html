@@ -3,24 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="삼터 공공업무 협동 플랫폼 공개 데모">
-  <title>삼터 업무 플랫폼 · Public Demo</title>
-  <link rel="stylesheet" href="./styles.css">
-  <link rel="stylesheet" href="./phase3.css">
-  <link rel="stylesheet" href="./phase4.css">
-  <link rel="stylesheet" href="./phase5.css">
-  <link rel="stylesheet" href="./phase6.css">
+  <meta name="description" content="충청북도를 기반으로 공공사업과 지역의 사람을 연결하는 삼터 공공업무 협동 플랫폼">
+  <title>삼터 | 충청북도 공공사업 수행 플랫폼</title>
+  <link rel="stylesheet" href="./home.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">三</div>
-      <div><strong>삼터</strong><span>공공업무 협동 플랫폼</span></div>
-    </div>
-    <div id="session-area" class="session-area"><span class="session-guest">PUBLIC DEMO</span></div>
+  <header class="site-header">
+    <a class="home-brand" href="./index.html" aria-label="삼터 홈">
+      <span class="brand-symbol">三</span>
+      <span class="brand-copy"><strong>삼터</strong><small>충청북도 공공사업 수행 플랫폼</small></span>
+    </a>
+    <nav class="site-nav" aria-label="주요 메뉴">
+      <a href="#about">삼터소개</a>
+      <a href="#business">사업안내</a>
+      <a href="#membership">조합원 안내</a>
+      <a href="#process">참여 가능한 업무</a>
+      <a class="nav-login" href="./app.html">업무 플랫폼 로그인</a>
+    </nav>
   </header>
-  <div id="notice" class="notice" hidden></div>
-  <div id="app"><div class="loading">공개 데모를 불러오는 중입니다.</div></div>
-  <script src="./public_demo.js"></script>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <span class="eyebrow">CHUNGCHEONGBUK-DO · PUBLIC WORK</span>
+        <h1 id="hero-title">지역의 일과 사람을 연결합니다.</h1>
+        <p class="hero-lead">
+          삼터는 충청북도를 기반으로 공공사업의 세부 업무를 지역의 수행자와 연결하고,
+          사업 등록부터 업무 모집·수행·증빙·검수·정산까지 한 흐름으로 관리하는 플랫폼입니다.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="./app.html">참여 가능한 업무 보기</a>
+          <a class="button secondary" href="./app.html">업무 플랫폼 로그인</a>
+        </div>
+        <p class="hero-note">조합원 가입 기능은 다음 단계에서 정식 가입·승인 절차와 함께 제공됩니다.</p>
+      </div>
+      <aside class="hero-panel" aria-label="삼터 운영 흐름">
+        <span class="panel-kicker">SAMTER WORKFLOW</span>
+        <h2>공공사업을 실제 수행까지 연결</h2>
+        <ol class="workflow-list">
+          <li><span>01</span><div><strong>사업 등록</strong><small>공공기관 사업과 예산·기간을 관리</small></div></li>
+          <li><span>02</span><div><strong>업무 모집</strong><small>지역·기간·인원·지급액을 공개</small></div></li>
+          <li><span>03</span><div><strong>수행</strong><small>신청자 선정 후 실제 업무 진행</small></div></li>
+          <li><span>04</span><div><strong>증빙 · 검수</strong><small>사진·문서 제출과 보완·승인</small></div></li>
+          <li><span>05</span><div><strong>정산</strong><small>지급대상과 지급완료 상태를 기록</small></div></li>
+        </ol>
+      </aside>
+    </section>
+
+    <section class="trust-strip" aria-label="운영 원칙">
+      <div><strong>지역 기반</strong><span>충청북도 현장 중심</span></div>
+      <div><strong>투명한 배분</strong><span>신청 → 선정 → 수행 이력 관리</span></div>
+      <div><strong>증빙 중심</strong><span>사진·문서 기반 검수</span></div>
+      <div><strong>추적 가능한 운영</strong><span>정산·알림·감사로그 기록</span></div>
+    </section>
+
+    <section id="about" class="section split-section">
+      <div class="section-heading">
+        <span class="eyebrow">ABOUT SAMTER</span>
+        <h2>공공사업이 지역의 실제 일로 이어지도록</h2>
+      </div>
+      <div class="section-body">
+        <p>
+          삼터는 공공기관에서 추진하는 사업을 세부 업무로 나누고, 참여 가능한 지역 수행자가
+          직접 신청하여 일할 수 있도록 연결하는 운영 체계를 지향합니다.
+        </p>
+        <p>
+          단순한 일자리 게시판이 아니라 누가 신청했고, 누가 선정되었으며, 어떤 결과와 증빙을
+          제출했고, 검수와 지급이 어떻게 완료되었는지까지 하나의 기록으로 남기는 것이 핵심입니다.
+        </p>
+      </div>
+    </section>
+
+    <section id="business" class="section soft-section">
+      <div class="section-heading centered">
+        <span class="eyebrow">PUBLIC PROJECT OPERATIONS</span>
+        <h2>공공사업 운영의 핵심 단계를 한 곳에서</h2>
+        <p>현재 MVP에서 이사장과 관리자가 직접 검증할 수 있는 핵심 업무 흐름입니다.</p>
+      </div>
+      <div class="feature-grid">
+        <article><span class="feature-no">01</span><h3>사업관리</h3><p>발주기관, 사업기간, 예산과 담당자를 기준으로 공공사업을 관리합니다.</p></article>
+        <article><span class="feature-no">02</span><h3>업무 공개모집</h3><p>지역, 일정, 필요인원, 수행방법과 지급 예정금액을 명확히 공개합니다.</p></article>
+        <article><span class="feature-no">03</span><h3>신청·선정</h3><p>수행자가 직접 “내가 하겠습니다” 신청하고 관리자가 신청자를 확인해 선정합니다.</p></article>
+        <article><span class="feature-no">04</span><h3>수행·증빙</h3><p>선정된 수행자는 결과 설명과 사진·문서 증빙을 제출할 수 있습니다.</p></article>
+        <article><span class="feature-no">05</span><h3>검수·보완</h3><p>관리자는 승인, 보완 요청, 반려를 처리하고 검수 이력을 남길 수 있습니다.</p></article>
+        <article><span class="feature-no">06</span><h3>정산·감사</h3><p>지급 예정과 지급 완료를 기록하고 주요 변경사항을 감사로그로 확인합니다.</p></article>
+      </div>
+    </section>
+
+    <section id="membership" class="section membership-section">
+      <div>
+        <span class="eyebrow">COOPERATIVE MEMBERS</span>
+        <h2>조합원이 참여하는 구조로 확장합니다.</h2>
+        <p>
+          다음 단계에서는 생산자조합원·소비자조합원 등 조합원 유형과 가입신청, 관리자 승인,
+          출자 상태를 별도로 관리하도록 확장합니다. 시스템 권한과 조합원 유형은 분리하여 운영합니다.
+        </p>
+      </div>
+      <div class="membership-card">
+        <strong>PHASE 8 예정</strong>
+        <ul>
+          <li>조합원 가입 신청</li>
+          <li>생산자·소비자 등 조합원 유형</li>
+          <li>가입 심사 및 승인</li>
+          <li>출자 상태 관리</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="process" class="section process-section">
+      <div class="section-heading centered">
+        <span class="eyebrow">HOW IT WORKS</span>
+        <h2>업무는 이렇게 배분되고 완료됩니다.</h2>
+      </div>
+      <div class="process-line">
+        <div><span>1</span><strong>공공사업 등록</strong><small>사업과 세부 업무 생성</small></div>
+        <div><span>2</span><strong>업무 모집</strong><small>참여 가능한 업무 공개</small></div>
+        <div><span>3</span><strong>수행 신청</strong><small>“내가 하겠습니다”</small></div>
+        <div><span>4</span><strong>관리자 선정</strong><small>신청자 검토 후 배정</small></div>
+        <div><span>5</span><strong>수행·증빙</strong><small>결과와 자료 제출</small></div>
+        <div><span>6</span><strong>검수·정산</strong><small>승인 후 지급 기록</small></div>
+      </div>
+      <div class="center-actions"><a class="button primary" href="./app.html">업무 플랫폼 들어가기</a></div>
+    </section>
+
+    <section class="region-section">
+      <div class="region-copy">
+        <span class="eyebrow">CHUNGBUK NETWORK</span>
+        <h2>충청북도 전역을 연결하는 지역 기반</h2>
+        <p>지역별 공공사업과 수행 가능한 인력을 연결할 수 있도록 충북 전역을 기본 활동권역으로 설계합니다.</p>
+      </div>
+      <div class="region-tags" aria-label="충청북도 시군">
+        <span>청주</span><span>충주</span><span>제천</span><span>진천</span><span>음성</span><span>괴산</span>
+        <span>증평</span><span>보은</span><span>옥천</span><span>영동</span><span>단양</span>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <span class="eyebrow">SAMTER MVP</span>
+      <h2>공공사업 운영의 전체 흐름을 직접 확인해보세요.</h2>
+      <p>현재 MVP에서는 관리자와 수행자 관점의 사업·업무·증빙·검수·정산 흐름을 체험할 수 있습니다.</p>
+      <a class="button light" href="./app.html">업무 플랫폼 시작하기</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div><strong>삼터</strong><span>충청북도 기반 공공사업 수행 플랫폼</span></div>
+    <p>본 페이지는 운영 검증을 위한 MVP 안내 페이지입니다.</p>
+  </footer>
 </body>
 </html>
