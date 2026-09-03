@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="삼터 사회적협동조합 조합원 가입 신청">
+  <title>조합원 가입 | 삼터</title>
+  <link rel="stylesheet" href="./join.css">
+</head>
+<body>
+  <header class="join-header">
+    <a class="join-brand" href="./index.html"><span>三</span><div><strong>삼터</strong><small>충청북도 공공사업 수행 플랫폼</small></div></a>
+    <a class="login-link" href="./app.html">조합원 로그인</a>
+  </header>
+
+  <main class="join-layout">
+    <section class="join-intro">
+      <span class="eyebrow">COOPERATIVE MEMBERSHIP</span>
+      <h1>삼터 조합원 가입 신청</h1>
+      <p>충청북도 지역의 공공사업에 함께 참여하고, 지역의 일과 사람을 연결하는 삼터의 조합원이 되어주세요.</p>
+      <div class="join-flow">
+        <div><span>1</span><strong>가입 신청</strong><small>유형과 기본정보 작성</small></div>
+        <div><span>2</span><strong>관리자 심사</strong><small>가입요건 및 활동정보 확인</small></div>
+        <div><span>3</span><strong>가입 승인</strong><small>승인 후 조합원 계정 사용</small></div>
+      </div>
+      <aside class="join-notice">
+        <strong>조합원 유형과 플랫폼 권한은 별도로 관리됩니다.</strong>
+        <p>생산자조합원은 승인 후 현재 MVP에서 공개 업무에 신청하고 수행할 수 있습니다. 출자금·조합원 명부 상세 관리는 다음 단계에서 연계됩니다.</p>
+      </aside>
+    </section>
+
+    <section class="join-card">
+      <div class="demo-warning"><strong>공개 데모</strong> 실제 개인정보나 실제 사용 비밀번호를 입력하지 마세요. 입력 내용은 이 브라우저에만 저장됩니다.</div>
+      <form id="membership-form">
+        <fieldset>
+          <legend>1. 조합원 유형</legend>
+          <div class="type-grid">
+            <label><input type="radio" name="membership_type" value="PRODUCER" required><span><strong>생산자조합원</strong><small>공공업무·용역을 직접 수행</small></span></label>
+            <label><input type="radio" name="membership_type" value="CONSUMER"><span><strong>소비자조합원</strong><small>조합의 서비스 이용·수혜</small></span></label>
+            <label><input type="radio" name="membership_type" value="EMPLOYEE"><span><strong>직원조합원</strong><small>조합과 고용관계로 참여</small></span></label>
+            <label><input type="radio" name="membership_type" value="VOLUNTEER"><span><strong>자원봉사자조합원</strong><small>공익·봉사활동에 참여</small></span></label>
+            <label><input type="radio" name="membership_type" value="SUPPORTER"><span><strong>후원자조합원</strong><small>조합의 목적과 활동을 지원</small></span></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. 기본정보</legend>
+          <div class="form-grid">
+            <label>성명<input name="name" required maxlength="100"></label>
+            <label>이메일<input name="email" type="email" required autocomplete="email"></label>
+            <label>비밀번호<input name="password" type="password" required minlength="8" autocomplete="new-password"></label>
+            <label>연락처<input name="phone" placeholder="010-0000-0000"></label>
+            <label class="wide">주소<input name="address" placeholder="충청북도 ..."></label>
+            <label>주 활동지역<select name="region" required><option value="">선택</option><option>청주시</option><option>충주시</option><option>제천시</option><option>진천군</option><option>음성군</option><option>괴산군</option><option>증평군</option><option>보은군</option><option>옥천군</option><option>영동군</option><option>단양군</option></select></label>
+            <label>활동 가능지역<input name="available_areas" placeholder="예: 청주, 증평, 진천"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>3. 참여정보</legend>
+          <label>가입동기<textarea name="motivation" rows="4" placeholder="삼터에 가입하려는 이유와 기대하는 활동을 적어주세요."></textarea></label>
+          <label>경력·보유기술<textarea name="skills" rows="4" placeholder="예: 시설점검, 환경정비, 현장조사, 돌봄 등"></textarea></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>4. 필수 동의</legend>
+          <div class="agreements">
+            <label><input type="checkbox" name="agreed_bylaws" required> 삼터 정관 및 조합 운영원칙에 동의합니다.</label>
+            <label><input type="checkbox" name="agreed_privacy" required> 가입 심사를 위한 개인정보 수집·이용에 동의합니다.</label>
+            <label><input type="checkbox" name="agreed_member_duties" required> 조합원의 권리와 의무를 확인하고 준수하는 데 동의합니다.</label>
+          </div>
+        </fieldset>
+
+        <div id="join-result" class="join-result" hidden></div>
+        <button class="submit-button" type="submit">조합원 가입 신청</button>
+      </form>
+    </section>
+  </main>
+  <script type="module" src="./join_demo.js"></script>
+</body>
+</html>
