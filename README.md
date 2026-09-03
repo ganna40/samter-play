@@ -8,6 +8,6 @@ Demo accounts:
 - Admin: `admin@samter.kr` / `Samter1234!`
 - Worker: `worker@samter.kr` / `Worker1234!`
 
-This repository contains only the static browser demo. The FastAPI/PostgreSQL source remains in the private source repository.
+PHASE 8 membership onboarding and PHASE 9 membership roster/contribution flows are simulated in-browser for review. Do not enter real personal or financial information in the public demo.
 
-Deployment: GitHub Pages from the `new` branch root.
+This repository contains only the static browser demo. The FastAPI/PostgreSQL source remains in the private source repository.
