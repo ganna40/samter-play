@@ -63,9 +63,13 @@
   function bind(root) {
     root.querySelectorAll('[data-p9-plan]').forEach((b) => b.onclick = () => {
       const rows=roster(), item=rows.find((x)=>Number(x.id)===Number(b.dataset.p9Plan));
-      const count=prompt('출자 좌수', String(item.share_count || 1)); if(!count) return;
+      const phase11=window.SAMTER_PHASE11_DEMO;
+      const hint=phase11?.currentHint?.(item.id) || '1인 출자한도 30% 기준이 적용됩니다.';
+      const count=prompt(`출자 좌수\n${hint}`, String(item.share_count || 1)); if(!count) return;
+      const validation=phase11?.validateSharePlan?.(item.id, Number(count));
+      if(validation && !validation.ok){alert(validation.message);return;}
       const price=prompt('1좌 금액', String(item.share_price || 10000)); if(!price) return;
-      item.share_count=Number(count); item.share_price=Number(price); item.contribution_status=item.paid_contribution_amount>0?'PARTIAL':'UNPAID'; saveRoster(rows); renderRosterAdmin(); notice('출자 약정을 저장했습니다.');
+      item.share_count=Number(count); item.share_price=Number(price); item.contribution_status=item.paid_contribution_amount>0?'PARTIAL':'UNPAID'; saveRoster(rows); renderRosterAdmin(); notice(validation?.bootstrap ? '출자 약정을 저장했습니다. (설립 준비 단계)' : '출자 약정을 저장했습니다.');
     });
     root.querySelectorAll('[data-p9-pay]').forEach((b) => b.onclick = () => {
       const rows=roster(), item=rows.find((x)=>Number(x.id)===Number(b.dataset.p9Pay));
@@ -109,7 +113,7 @@
   function installMyCard() {
     const s=session(); if(!s||s.role==='ADMIN'||document.querySelector('[data-phase9-demo-card]')) return;
     syncApprovedApplications(); const item=roster().find((x)=>x.email===s.email); if(!item) return;
-    const host=document.querySelector('.producer-page,.consumer-page'); if(!host) return;
+    const host=document.querySelector('.producer-page, .consumer-page'); if(!host) return;
     const card=document.createElement('section'); card.className='panel phase9-demo-card'; card.dataset.phase9DemoCard='1';
     card.innerHTML=`<div class="section-head"><div><span class="eyebrow">MY MEMBERSHIP · DEMO</span><h2>내 조합원 정보</h2></div><strong>${esc(item.membership_number)}</strong></div><div class="phase9-demo-grid"><div>상태<br><strong>${item.status}</strong></div><div>출자<br><strong>${money(item.paid_contribution_amount)} / ${money(required(item))}</strong></div><div>수행자격<br><strong>${item.can_perform_work?'업무 수행 가능':'승인 전'}</strong></div></div>`;
     host.prepend(card);
