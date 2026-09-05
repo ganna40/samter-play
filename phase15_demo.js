@@ -119,6 +119,15 @@
       for (const [label,fn] of [['서비스 마켓',market],['발주기관 관리',agency]]) { const b = document.createElement('button'); b.className = 'side-link'; b.dataset.phase15Demo = '1'; b.textContent = label; b.onclick = () => { sidebar.querySelectorAll('.side-link').forEach(x => x.classList.remove('active')); b.classList.add('active'); fn(); }; sidebar.appendChild(b); }
     }
     if (role === 'WORKER') { const hero = document.querySelector('.producer-hero'); if (hero && !hero.querySelector('[data-phase15-demo]')) { const b = document.createElement('button'); b.className = 'btn btn-primary'; b.dataset.phase15Demo = '1'; b.textContent = '내 서비스 · 마켓 주문관리'; b.onclick = market; hero.appendChild(b); } }
+    if (role === 'WORKER') {
+      const sidebar = document.querySelector('.role-sidebar');
+      if (sidebar && !sidebar.querySelector('[data-phase15-worker]')) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'side-link'; b.dataset.phase15Worker = '1'; b.textContent = '서비스 마켓';
+        b.onclick = () => { sidebar.querySelectorAll('.side-link').forEach(x => x.classList.remove('active')); b.classList.add('active'); market(); };
+        sidebar.appendChild(b);
+      }
+    }
   }
   new MutationObserver(install).observe(document.querySelector('#app'),{childList:true,subtree:true});
   install();

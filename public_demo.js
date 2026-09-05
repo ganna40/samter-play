@@ -131,6 +131,17 @@ function audit() {
   return `<section class="panel table-panel"><div class="section-head"><div><span class="eyebrow">AUDIT LOG</span><h2>감사로그</h2></div></div><div class="table-wrap"><table><thead><tr><th>시간</th><th>사용자</th><th>행위</th><th>대상</th></tr></thead><tbody>${DEMO.audit.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td><strong>${x[2]}</strong></td><td>${x[3]}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 
+function roleSidebar(title, items) {
+  return `<aside class="sidebar role-sidebar" aria-label="${esc(title)}"><div class="sidebar-label">${esc(title)}</div>${items.map(([label,target]) => `<button type="button" class="side-link role-anchor" data-target="${target}">${label}</button>`).join('')}</aside>`;
+}
+
+function rolePortalView() {
+  const agency = session.role === 'AGENCY_USER';
+  const title = agency ? '발주기관 메뉴' : '소비자 메뉴';
+  const items = agency ? [['담당 사업','#p15-projects']] : [['서비스 찾기','#p15-services'],['내 주문','#p15-orders']];
+  return `<div class="view-shell role-view-shell">${roleSidebar(title,items)}<main class="content role-content" id="phase15-portal"><p>전용 데모 화면을 불러오는 중입니다.</p></main></div>`;
+}
+
 function adminView() {
   const labels = {dashboard:'대시보드',projects:'사업관리',applications:'신청관리',reviews:'검수관리',settlements:'정산관리',audit:'감사로그'};
   const contents = {dashboard,projects,applications,reviews,settlements,audit};
@@ -138,10 +149,11 @@ function adminView() {
 }
 
 function workerView() {
-  return `<main class="producer-page"><div class="producer-hero"><div><span class="eyebrow">WORKER PORTAL · PUBLIC DEMO</span><h1>공공업무 참여</h1><p>${esc(session.name)}님이 참여 가능한 업무와 지급 현황입니다.</p></div><div class="today">${session.region || '충청북도'}</div></div>
+  const menu = roleSidebar('생산자 메뉴', [['내 신청 목록','#my-applications'],['참여 가능한 업무','#open-tasks'],['내 업무 · 지급 현황','#my-work']]);
+  return `<div class="view-shell role-view-shell">${menu}<main class="content producer-page role-content"><div class="producer-hero"><div><span class="eyebrow">WORKER PORTAL · PUBLIC DEMO</span><h1>공공업무 참여</h1><p>${esc(session.name)}님이 참여 가능한 업무와 지급 현황입니다.</p></div><div class="today">${session.region || '충청북도'}</div></div>
   ${myApplications()}
-  <section class="worker-section"><div class="worker-section-head"><div><span class="eyebrow">OPEN TASKS</span><h2>참여 가능한 업무</h2></div><span class="count-chip">${DEMO.publicTasks.length}건</span></div><div class="producer-work-grid">${DEMO.publicTasks.map(t=>`<article class="work-card public-work-card"><div class="work-card-top"><div><div class="eyebrow">${t.project}</div><h3>${t.title}</h3></div><span class="status status-open">모집중</span></div><p>${t.region} 현장 업무 · 수행일 ${t.date}</p><div class="public-work-pay">${money(t.pay)}</div><div class="work-meta public-work-meta"><span>신청 <strong>${t.applicants}/${t.capacity}명</strong></span></div><div class="work-actions"><button class="btn ${alreadyApplied(t) ? 'btn-secondary' : 'btn-primary'} apply-task" data-id="${t.id}" ${alreadyApplied(t) ? 'disabled' : ''}>${alreadyApplied(t) ? '신청 완료' : '내가 하겠습니다'}</button></div></article>`).join('')}</div></section>
-  <section class="worker-section"><div class="worker-section-head"><div><span class="eyebrow">MY WORK</span><h2>내 업무 / 지급 현황</h2></div></div><div class="phase5-worker-grid"><article class="phase5-worker-card"><div><div class="eyebrow">APPROVED</div><h3>환경정비 업무</h3><span>검수 승인 완료</span></div><div class="phase5-worker-amount"><strong>180,000원</strong><span class="status status-payment_pending">지급대기</span></div></article><article class="phase6-bank-card"><div class="section-head"><div><span class="eyebrow">BANK ACCOUNT</span><h2>지급 계좌</h2></div></div><div class="phase6-bank-summary"><div><span>은행</span><strong>OO은행</strong></div><div><span>계좌번호</span><strong>110-***-****89</strong></div><div><span>예금주</span><strong>김수행</strong></div></div><small>실서비스에서는 암호화 저장되며 권한 있는 관리자만 원문을 조회할 수 있습니다.</small></article></div></section></main>`;
+  <section class="worker-section" id="open-tasks"><div class="worker-section-head"><div><span class="eyebrow">OPEN TASKS</span><h2>참여 가능한 업무</h2></div><span class="count-chip">${DEMO.publicTasks.length}건</span></div><div class="producer-work-grid">${DEMO.publicTasks.map(t=>`<article class="work-card public-work-card"><div class="work-card-top"><div><div class="eyebrow">${t.project}</div><h3>${t.title}</h3></div><span class="status status-open">모집중</span></div><p>${t.region} 현장 업무 · 수행일 ${t.date}</p><div class="public-work-pay">${money(t.pay)}</div><div class="work-meta public-work-meta"><span>신청 <strong>${t.applicants}/${t.capacity}명</strong></span></div><div class="work-actions"><button class="btn ${alreadyApplied(t) ? 'btn-secondary' : 'btn-primary'} apply-task" data-id="${t.id}" ${alreadyApplied(t) ? 'disabled' : ''}>${alreadyApplied(t) ? '신청 완료' : '내가 하겠습니다'}</button></div></article>`).join('')}</div></section>
+  <section class="worker-section" id="my-work"><div class="worker-section-head"><div><span class="eyebrow">MY WORK</span><h2>내 업무 / 지급 현황</h2></div></div><div class="phase5-worker-grid"><article class="phase5-worker-card"><div><div class="eyebrow">APPROVED</div><h3>환경정비 업무</h3><span>검수 승인 완료</span></div><div class="phase5-worker-amount"><strong>180,000원</strong><span class="status status-payment_pending">지급대기</span></div></article><article class="phase6-bank-card"><div class="section-head"><div><span class="eyebrow">BANK ACCOUNT</span><h2>지급 계좌</h2></div></div><div class="phase6-bank-summary"><div><span>은행</span><strong>OO은행</strong></div><div><span>계좌번호</span><strong>110-***-****89</strong></div><div><span>예금주</span><strong>김수행</strong></div></div><small>실서비스에서는 암호화 저장되며 권한 있는 관리자만 원문을 조회할 수 있습니다.</small></article></div></section></main></div>`;
 }
 
 function render() {
@@ -159,7 +171,7 @@ function render() {
     window.scrollTo({top:scroll,behavior:'instant'});
     return;
   }
-  app.innerHTML = session.role === 'ADMIN' ? adminView() : session.role === 'WORKER' ? workerView() : '<main class="content" id="phase15-portal"><p>전용 데모 화면을 불러오는 중입니다.</p></main>';
+  app.innerHTML = session.role === 'ADMIN' ? adminView() : session.role === 'WORKER' ? workerView() : rolePortalView();
   bind();
 }
 
@@ -171,6 +183,13 @@ function bind() {
     setSession({ email:data.email, role:user.role, name:user.name, region:user.region });
   };
   document.querySelectorAll('.admin-tab').forEach(b => b.onclick = () => { adminTab=b.dataset.tab; render(); });
+  document.querySelectorAll('.role-anchor').forEach(b => b.onclick = () => {
+    const target = document.querySelector(b.dataset.target);
+    if (!target) return;
+    document.querySelectorAll('.role-anchor').forEach(link => link.classList.remove('active'));
+    b.classList.add('active');
+    target.scrollIntoView({behavior:'smooth',block:'start'});
+  });
   document.querySelectorAll('.select-app').forEach(b => b.onclick = () => { const a=DEMO.applications.find(x=>x.id==b.dataset.id); a.status='SELECTED'; notice('수행자를 선정했습니다.'); persistWork(); render(); });
   document.querySelectorAll('.reject-app').forEach(b => b.onclick = () => { const a=DEMO.applications.find(x=>x.id==b.dataset.id); a.status='REJECTED'; notice('미선정 처리했습니다.'); persistWork(); render(); });
   document.querySelectorAll('.approve-review').forEach(b => b.onclick = () => { const r=DEMO.reviews.find(x=>x.id==b.dataset.id); r.status='APPROVED'; notice('검수를 승인했습니다.'); persistWork(); render(); });

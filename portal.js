@@ -80,15 +80,17 @@
         sidebar.querySelectorAll('[data-ui-group]').forEach(section => { section.hidden = !section.querySelector('.side-link:not([hidden])'); });
       };
       sidebar.prepend(search); sidebar.prepend(toggle);
-      [...groups.map(([name])=>name),'기타'].forEach(name => {
-        const section = element('section'); section.dataset.uiGroup = name;
-        section.append(element('h2','ui-menu-heading',name)); section.hidden = true; sidebar.append(section);
-      });
+      if (!sidebar.classList.contains('role-sidebar')) {
+        [...groups.map(([name])=>name),'기타'].forEach(name => {
+          const section = element('section'); section.dataset.uiGroup = name;
+          section.append(element('h2','ui-menu-heading',name)); section.hidden = true; sidebar.append(section);
+        });
+      }
     }
     sidebar.querySelectorAll('.side-link:not([data-ui-menu])').forEach(button => {
       button.dataset.uiMenu = '1';
       const group = [...sidebar.querySelectorAll('[data-ui-group]')].find(n=>n.dataset.uiGroup === groupFor(button.textContent));
-      group.hidden = false; group.append(button);
+      if (group) { group.hidden = false; group.append(button); }
       button.addEventListener('click', event => { if(button.classList.contains('active') && !restoring){event.stopImmediatePropagation();event.preventDefault();} }, true);
       button.addEventListener('click', () => {
         if (!restoring) { history.pushState(null,'','#menu='+encodeURIComponent(button.textContent.trim())); restored = location.hash; }
@@ -102,13 +104,16 @@
     const main = document.querySelector('.view-shell .content');
     if (main && !main.querySelector('.ui-shortcuts')) {
       const box = element('section','ui-shortcuts');
-      box.append(element('h2','','어떤 업무를 처리하시겠어요?'), element('p','','심사부터 정산까지, 자주 쓰는 업무로 바로 이동하세요.'));
+      const roleMenu = sidebar.classList.contains('role-sidebar');
+      box.append(element('h2','',roleMenu ? '내 업무 바로가기' : '어떤 업무를 처리하시겠어요?'), element('p','',roleMenu ? '자주 쓰는 화면을 한 번에 확인하세요.' : '심사부터 정산까지, 자주 쓰는 업무로 바로 이동하세요.'));
       const grid = element('div','ui-shortcut-grid'); box.append(grid);
       main.prepend(box);
     }
     const grid = main?.querySelector('.ui-shortcut-grid');
     if (grid) {
-      ['가입','신청관리','검수','정산','사업관리','기관'].forEach(word => {
+      const roleMenu = sidebar.classList.contains('role-sidebar');
+      const preferred = roleMenu ? [...sidebar.querySelectorAll('.side-link')].map(button => button.textContent.trim()) : ['가입','신청관리','검수','정산','사업관리','기관'];
+      preferred.slice(0,6).forEach(word => {
         const target = [...sidebar.querySelectorAll('.side-link')].find(b=>b.textContent.includes(word));
         if (!target || [...grid.children].some(b=>b.textContent === target.textContent)) return;
         const button = element('button','',target.textContent); button.type='button';
@@ -161,6 +166,13 @@
   }
   function sections() {
     document.querySelectorAll('.producer-page,.phase15a-consumer-page,.phase15b-agency-page,[data-phase15a-consumer],#phase15-portal').forEach(main=>{
+      const sectionIds = {'내 신청 목록':'my-applications','참여 가능한 업무':'open-tasks','내 업무 / 지급 현황':'my-work','서비스 찾기':'p15-services','내 주문':'p15-orders','담당 사업':'p15-projects'};
+      main.querySelectorAll('h2').forEach(heading => {
+        const label = Object.keys(sectionIds).find(text => heading.textContent.trim().startsWith(text));
+        const id = sectionIds[label];
+        if (id && heading.closest('section,article')) heading.closest('section,article').id = id;
+      });
+      if (main.closest('.view-shell')) return;
       const headings = [...main.querySelectorAll('h2')].filter(h=>!h.closest('.ui-shortcuts,dialog'));
       if (headings.length < 2) return;
       let nav=main.querySelector('.ui-section-nav');
