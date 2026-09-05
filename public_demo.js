@@ -2,6 +2,9 @@ const DEMO = {
   users: {
     'admin@samter.kr': { password: 'Samter1234!', role: 'ADMIN', name: '삼터 관리자' },
     'worker@samter.kr': { password: 'Worker1234!', role: 'WORKER', name: '김수행', region: '충청북도 청주시' },
+    'consumer@samter.kr': { password: 'Consumer1234!', role: 'CONSUMER', name: '소비자 조합원 (시연)' },
+    'agency@samter.kr': { password: 'Agency1234!', role: 'AGENCY_USER', name: 'OO시청 담당자 (시연)' },
+    'agency2@samter.kr': { password: 'Agency1234!', role: 'AGENCY_USER', name: 'OO구청 담당자 (시연)' },
   },
   applications: [
     { id: 1, task: '청주시 A지역 시설 점검', worker: '김수행', region: '청주시', experience: '시설점검 3회', status: 'APPLIED' },
@@ -67,7 +70,7 @@ function loginView() {
       <label>비밀번호<input name="password" type="password" value="Samter1234!" required></label>
       <button class="btn btn-primary login-button" type="submit">로그인</button>
     </form>
-    <div class="login-help">관리자 <code>admin@samter.kr / Samter1234!</code><br>수행자 <code>worker@samter.kr / Worker1234!</code></div>
+    <div class="login-help">관리자 <code>admin@samter.kr / Samter1234!</code><br>생산자 <code>worker@samter.kr / Worker1234!</code><br>소비자 <code>consumer@samter.kr / Consumer1234!</code><br>발주기관 <code>agency@samter.kr / Agency1234!</code><br>다른 기관 <code>agency2@samter.kr / Agency1234!</code></div>
   </section></main>`;
 }
 
@@ -129,7 +132,7 @@ function render() {
   renderSession();
   const app = $('#app');
   if (!session) { app.innerHTML = loginView(); bind(); return; }
-  app.innerHTML = session.role === 'ADMIN' ? adminView() : workerView();
+  app.innerHTML = session.role === 'ADMIN' ? adminView() : session.role === 'WORKER' ? workerView() : '<main class="content" id="phase15-portal"><p>전용 데모 화면을 불러오는 중입니다.</p></main>';
   bind();
 }
 

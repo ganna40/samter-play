@@ -1,8 +1,10 @@
-name: Phase 14 Public Demo CI
+name: Public Demo CI
 
 on:
   push:
-    branches: [phase14-demo]
+    branches: [new, phase15-public-demo]
+  pull_request:
+    branches: [new]
 
 permissions:
   contents: read
@@ -16,4 +18,6 @@ jobs:
         with:
           node-version: 22
       - name: Run public demo tests
-        run: node --test tests/*.mjs
+        run: node --test tests/*.test.mjs phase13_demo.test.mjs
+      - name: Check JavaScript syntax
+        run: for file in *.js; do node --check "$file"; done
