@@ -61,41 +61,41 @@
   }
 
   function bind(root) {
-    root.querySelectorAll('[data-p9-plan]').forEach((b) => b.onclick = () => {
+    root.querySelectorAll('[data-p9-plan]').forEach((b) => b.onclick = async () => {
       const rows=roster(), item=rows.find((x)=>Number(x.id)===Number(b.dataset.p9Plan));
       const phase11=window.SAMTER_PHASE11_DEMO;
       const hint=phase11?.currentHint?.(item.id) || '1인 출자한도 30% 기준이 적용됩니다.';
-      const count=prompt(`출자 좌수\n${hint}`, String(item.share_count || 1)); if(!count) return;
+      const count=await window.SamterUI.prompt(`출자 좌수\n${hint}`, String(item.share_count || 1)); if(!count) return;
       const validation=phase11?.validateSharePlan?.(item.id, Number(count));
       if(validation && !validation.ok){alert(validation.message);return;}
-      const price=prompt('1좌 금액', String(item.share_price || 10000)); if(!price) return;
+      const price=await window.SamterUI.prompt('1좌 금액', String(item.share_price || 10000)); if(!price) return;
       item.share_count=Number(count); item.share_price=Number(price); item.contribution_status=item.paid_contribution_amount>0?'PARTIAL':'UNPAID'; saveRoster(rows); renderRosterAdmin(); notice(validation?.bootstrap ? '출자 약정을 저장했습니다. (설립 준비 단계)' : '출자 약정을 저장했습니다.');
     });
-    root.querySelectorAll('[data-p9-pay]').forEach((b) => b.onclick = () => {
+    root.querySelectorAll('[data-p9-pay]').forEach((b) => b.onclick = async () => {
       const rows=roster(), item=rows.find((x)=>Number(x.id)===Number(b.dataset.p9Pay));
-      const amount=Number(prompt('입금 확인 금액', String(Math.max(required(item)-item.paid_contribution_amount,0)))||0); if(amount<=0) return;
+      const amount=Number(await window.SamterUI.prompt('입금 확인 금액', String(Math.max(required(item)-item.paid_contribution_amount,0)))||0); if(amount<=0) return;
       item.paid_contribution_amount += amount;
       if (item.paid_contribution_amount >= required(item) && required(item)>0) { item.contribution_status='PAID'; item.status='ACTIVE'; }
       else item.contribution_status='PARTIAL';
       saveRoster(rows); renderRosterAdmin(); notice('출자금 입금을 확인했습니다.');
     });
-    root.querySelectorAll('[data-p9-eligible]').forEach((b) => b.onclick = () => {
+    root.querySelectorAll('[data-p9-eligible]').forEach((b) => b.onclick = async () => {
       const rows=roster(), item=rows.find((x)=>Number(x.id)===Number(b.dataset.p9Eligible));
-      item.qualifications=prompt('보유 자격·경력', item.qualifications || '') ?? item.qualifications;
-      item.work_regions=prompt('업무 수행 가능지역', item.work_regions || '') ?? item.work_regions;
+      item.qualifications=await window.SamterUI.prompt('보유 자격·경력', item.qualifications || '') ?? item.qualifications;
+      item.work_regions=await window.SamterUI.prompt('업무 수행 가능지역', item.work_regions || '') ?? item.work_regions;
       item.can_perform_work=confirm('업무 수행자격을 승인하시겠습니까?'); saveRoster(rows); renderRosterAdmin(); notice('수행자격 상태를 변경했습니다.');
     });
-    root.querySelectorAll('[data-p9-withdraw]').forEach((b) => b.onclick = () => terminate(Number(b.dataset.p9Withdraw),'WITHDRAWN'));
-    root.querySelectorAll('[data-p9-expel]').forEach((b) => b.onclick = () => terminate(Number(b.dataset.p9Expel),'EXPELLED'));
-    root.querySelectorAll('[data-p9-refund]').forEach((b) => b.onclick = () => {
+    root.querySelectorAll('[data-p9-withdraw]').forEach((b) => b.onclick = async () => terminate(Number(b.dataset.p9Withdraw),'WITHDRAWN'));
+    root.querySelectorAll('[data-p9-expel]').forEach((b) => b.onclick = async () => terminate(Number(b.dataset.p9Expel),'EXPELLED'));
+    root.querySelectorAll('[data-p9-refund]').forEach((b) => b.onclick = async () => {
       const rows=roster(), item=rows.find((x)=>Number(x.id)===Number(b.dataset.p9Refund));
-      const amount=Number(prompt('반환할 출자금', String(item.paid_contribution_amount))||0); if(amount<=0||amount>item.paid_contribution_amount) return;
+      const amount=Number(await window.SamterUI.prompt('반환할 출자금', String(item.paid_contribution_amount))||0); if(amount<=0||amount>item.paid_contribution_amount) return;
       item.paid_contribution_amount -= amount; if(item.paid_contribution_amount===0) item.contribution_status='REFUNDED'; saveRoster(rows); renderRosterAdmin(); notice('출자금 반환 이력을 기록했습니다.');
     });
   }
 
-  function terminate(id, status) {
-    const reason=prompt(status==='WITHDRAWN'?'탈퇴 사유':'제명 사유'); if(!reason) return;
+  async function terminate(id, status) {
+    const reason=await window.SamterUI.prompt(status==='WITHDRAWN'?'탈퇴 사유':'제명 사유'); if(!reason) return;
     const rows=roster(), item=rows.find((x)=>Number(x.id)===id); if(!item) return;
     item.status=status; item.status_reason=reason; item.can_perform_work=false; saveRoster(rows);
     const accounts=load(APPROVED_KEY, []); const account=accounts.find((x)=>x.email===item.email); if(account) account.disabled=true; save(APPROVED_KEY, accounts);
@@ -107,7 +107,7 @@
     if (session()?.role !== 'ADMIN') return;
     const sidebar=document.querySelector('.sidebar'); if(!sidebar||sidebar.querySelector('[data-phase9-demo]')) return;
     const button=document.createElement('button'); button.className='side-link'; button.dataset.phase9Demo='1'; button.textContent='조합원 명부';
-    button.onclick=()=>{sidebar.querySelectorAll('.side-link').forEach((x)=>x.classList.remove('active'));button.classList.add('active');renderRosterAdmin();}; sidebar.appendChild(button);
+    button.onclick=async ()=>{sidebar.querySelectorAll('.side-link').forEach((x)=>x.classList.remove('active'));button.classList.add('active');renderRosterAdmin();}; sidebar.appendChild(button);
   }
 
   function installMyCard() {

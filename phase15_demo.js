@@ -17,8 +17,10 @@
   function root() { return document.querySelector('#phase15-portal') || document.querySelector('.content') || document.querySelector('.producer-page'); }
   function shell(title, content) {
     root().innerHTML = `<div class="p15"><div class="page-heading"><div><span class="eyebrow">SAMTER · P15 PUBLIC DEMO</span><h1>${title}</h1></div></div><p class="p15-note">가상 데이터로 체험하는 공개 데모입니다. 실제 개인정보·계좌정보를 입력하지 마세요. 변경사항은 이 브라우저에만 저장됩니다.</p><div class="p15-actions">${user().role === 'WORKER' ? button('공공업무로 돌아가기','back') : ''}${user().role === 'ADMIN' ? button('마켓 관리','market') + button('기관 관리','agency') : ''}${button('P15 시연 데이터 초기화','reset')}</div>${content}</div>`;
-    root().querySelectorAll('[data-p15]').forEach(b => b.onclick = () => {
-      try { act(b.dataset.p15, Number(b.dataset.id), b); } catch (e) { notice(e.message); }
+    root().querySelectorAll('[data-p15]').forEach(b => b.onclick = async () => {
+      if (b.disabled) return;
+      b.disabled = true;
+      try { await act(b.dataset.p15, Number(b.dataset.id), b); } catch (e) { notice(e.message); } finally { b.disabled = false; }
     });
   }
   function market() {
@@ -45,7 +47,7 @@
     root().querySelectorAll('[data-link-user]').forEach(el => el.onchange = () => { if (user().role !== 'ADMIN') return; state.users[Number(el.dataset.linkUser)].agencyId = Number(el.value); save(); });
     root().querySelectorAll('[data-link-project]').forEach(el => el.onchange = () => { if (user().role !== 'ADMIN') return; state.projects.find(p => p.id === Number(el.dataset.linkProject)).agencyId = Number(el.value); save(); });
   }
-  function act(action, id) {
+  async function act(action, id) {
     const role = user().role;
     if (action === 'back') return render();
     if (action === 'market') return market();
@@ -80,8 +82,8 @@
         if (role !== 'WORKER') throw Error('생산자 전용입니다.');
         if (action === 'offer-new' || action === 'offer-edit') {
           if (action === 'offer-edit' && !['DRAFT','REJECTED','PAUSED'].includes(o?.status)) throw Error('판매를 중지한 뒤 수정하세요.');
-          const title = prompt('시연 서비스 이름',o?.title || '새 시연 서비스'); if (!title?.trim()) return;
-          const priceText = prompt('가격 (원)',String(o?.price || 30000)); if (priceText === null) return;
+          const title = await window.SamterUI.prompt('시연 서비스 이름',o?.title || '새 시연 서비스'); if (!title?.trim()) return;
+          const priceText = await window.SamterUI.prompt('가격 (원)',String(o?.price || 30000)); if (priceText === null) return;
           const price = Number(priceText); if (!Number.isSafeInteger(price) || price <= 0 || price > 100000000) throw Error('1~100,000,000 사이의 정수 금액을 입력하세요.');
           if (o) Object.assign(o,{title:title.trim().slice(0,100),price,status:'DRAFT'});
           else state.offerings.push({id:Math.max(...state.offerings.map(x => x.id),0)+1,title:title.trim().slice(0,100),price,description:'생산자가 등록한 가상 서비스',status:'DRAFT'});
@@ -94,13 +96,13 @@
       }
     } else if (['agency-new','agency-toggle','evidence-toggle','review-toggle'].includes(action)) {
       if (role !== 'ADMIN') throw Error('관리자 전용입니다.');
-      if (action === 'agency-new') { const name = prompt('가상 기관 이름'); if (!name?.trim()) return; state.agencies.push({id:Math.max(...state.agencies.map(a => a.id))+1,name:name.trim().slice(0,100),active:true}); }
+      if (action === 'agency-new') { const name = await window.SamterUI.prompt('가상 기관 이름'); if (!name?.trim()) return; state.agencies.push({id:Math.max(...state.agencies.map(a => a.id))+1,name:name.trim().slice(0,100),active:true}); }
       if (action === 'agency-toggle') { const a = state.agencies.find(a => a.id === id); a.active = !a.active; }
       if (action === 'evidence-toggle' || action === 'review-toggle') { const key = action === 'evidence-toggle' ? 'evidence' : 'reviews'; const item = state.projects.flatMap(p => p[key]).find(e => e.id === id); item.published = !item.published; }
     } else {
       const o = state.orders.find(o => o.id === id); if (!o) return;
       if (action === 'resolve' && o.resume_status === 'PAYMENT_SENT') {
-        const resolution = prompt('당사자 간 외부 환불·정산 처리 내용 (시연)'); if (!resolution?.trim()) return;
+        const resolution = await window.SamterUI.prompt('당사자 간 외부 환불·정산 처리 내용 (시연)'); if (!resolution?.trim()) return;
         o.admin_resolution = resolution.trim();
       }
       M.transition(o,role,action);

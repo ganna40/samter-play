@@ -172,20 +172,20 @@
         <div class="table-wrap"><table><thead><tr><th>유형</th><th>회의</th><th>일시</th><th>장소</th><th>상태</th><th>출석</th><th>안건</th></tr></thead><tbody>${rows}</tbody></table></div>
       </section>`;
 
-    document.querySelector('#phase12-refresh').onclick = () => renderList(Number(document.querySelector('#phase12-year').value || CURRENT_YEAR));
-    document.querySelector('#phase12-create').onclick = () => createMeeting(Number(document.querySelector('#phase12-year').value || CURRENT_YEAR));
-    content.querySelectorAll('[data-p12-open]').forEach((button) => button.onclick = () => renderDetail(button.dataset.p12Open));
+    document.querySelector('#phase12-refresh').onclick = async () => renderList(Number(document.querySelector('#phase12-year').value || CURRENT_YEAR));
+    document.querySelector('#phase12-create').onclick = async () => createMeeting(Number(document.querySelector('#phase12-year').value || CURRENT_YEAR));
+    content.querySelectorAll('[data-p12-open]').forEach((button) => button.onclick = async () => renderDetail(button.dataset.p12Open));
   }
 
-  function createMeeting(year) {
-    const typeRaw = prompt('회의 유형을 입력하세요.\n1 = 총회 / 2 = 이사회', '1');
+  async function createMeeting(year) {
+    const typeRaw = await window.SamterUI.prompt('회의 유형을 입력하세요.\n1 = 총회 / 2 = 이사회', '1');
     if (!typeRaw) return;
     const type = String(typeRaw).trim() === '2' ? 'BOARD' : 'GENERAL_ASSEMBLY';
-    const title = prompt('회의 제목을 입력하세요.', type === 'BOARD' ? `${year}년 이사회` : `${year}년 정기총회`);
+    const title = await window.SamterUI.prompt('회의 제목을 입력하세요.', type === 'BOARD' ? `${year}년 이사회` : `${year}년 정기총회`);
     if (!title) return;
-    const scheduled = prompt('회의 일시 (YYYY-MM-DDTHH:MM)', `${year}-09-30T14:00`);
+    const scheduled = await window.SamterUI.prompt('회의 일시 (YYYY-MM-DDTHH:MM)', `${year}-09-30T14:00`);
     if (!scheduled) return;
-    const location = prompt('회의 장소', '삼터 회의실');
+    const location = await window.SamterUI.prompt('회의 장소', '삼터 회의실');
     if (!location) return;
     const id = state.nextMeeting++;
     state.meetings.push({
@@ -291,7 +291,7 @@
         <span>${minutesReady ? '✅' : '⬜'} 회의록</span>
       </section>`;
 
-    document.querySelector('#phase12-back').onclick = () => renderList(item.fiscal_year);
+    document.querySelector('#phase12-back').onclick = async () => renderList(item.fiscal_year);
     bindDetail(item);
   }
 
@@ -300,27 +300,27 @@
     const byId = (list, id) => list.find((row) => Number(row.id) === Number(id));
 
     const edit = document.querySelector('#p12-edit-meeting');
-    if (edit) edit.onclick = () => {
+    if (edit) edit.onclick = async () => {
       if (!mutable(item)) return;
-      const title = prompt('회의 제목', item.title); if (!title) return;
-      const scheduled = prompt('회의 일시 (YYYY-MM-DDTHH:MM)', String(item.scheduled_at).slice(0,16)); if (!scheduled) return;
-      const location = prompt('회의 장소', item.location); if (!location) return;
+      const title = await window.SamterUI.prompt('회의 제목', item.title); if (!title) return;
+      const scheduled = await window.SamterUI.prompt('회의 일시 (YYYY-MM-DDTHH:MM)', String(item.scheduled_at).slice(0,16)); if (!scheduled) return;
+      const location = await window.SamterUI.prompt('회의 장소', item.location); if (!location) return;
       item.title = title; item.scheduled_at = scheduled; item.location = location; refresh(); notice('회의 정보를 수정했습니다.');
     };
     const setNotice = document.querySelector('#p12-set-notice');
-    if (setNotice) setNotice.onclick = () => {
-      const value = prompt('소집통지 일시 (YYYY-MM-DDTHH:MM)', item.notice_sent_at ? String(item.notice_sent_at).slice(0,16) : String(item.scheduled_at).slice(0,10) + 'T09:00');
+    if (setNotice) setNotice.onclick = async () => {
+      const value = await window.SamterUI.prompt('소집통지 일시 (YYYY-MM-DDTHH:MM)', item.notice_sent_at ? String(item.notice_sent_at).slice(0,16) : String(item.scheduled_at).slice(0,10) + 'T09:00');
       if (!value) return; item.notice_sent_at = value; refresh(); notice('소집통지 일시를 저장했습니다.');
     };
     const hold = document.querySelector('#p12-hold');
-    if (hold) hold.onclick = () => { if (item.status !== 'DRAFT') return; item.status = 'HELD'; item.held_at = new Date().toISOString(); refresh(); notice('회의를 개최 상태로 변경했습니다.'); };
+    if (hold) hold.onclick = async () => { if (item.status !== 'DRAFT') return; item.status = 'HELD'; item.held_at = new Date().toISOString(); refresh(); notice('회의를 개최 상태로 변경했습니다.'); };
     const cancel = document.querySelector('#p12-cancel');
-    if (cancel) cancel.onclick = () => {
-      const reason = prompt('취소 사유를 입력하세요.'); if (!reason) return;
+    if (cancel) cancel.onclick = async () => {
+      const reason = await window.SamterUI.prompt('취소 사유를 입력하세요.'); if (!reason) return;
       item.status = 'CANCELLED'; item.cancellation_reason = reason; refresh(); notice('회의를 취소 처리했습니다.');
     };
     const finalize = document.querySelector('#p12-finalize');
-    if (finalize) finalize.onclick = () => {
+    if (finalize) finalize.onclick = async () => {
       if (item.status !== 'HELD') return;
       if (!(item.attendees || []).length) return alert('참석자 기록이 필요합니다.');
       if (!(item.agenda || []).length) return alert('안건이 최소 1건 필요합니다.');
@@ -332,58 +332,58 @@
     };
 
     const addAttendee = document.querySelector('#p12-add-attendee');
-    if (addAttendee) addAttendee.onclick = () => {
+    if (addAttendee) addAttendee.onclick = async () => {
       const members = roster();
       const examples = members.slice(0,5).map((row) => `${row.id}: ${row.name}`).join('\n');
-      const raw = prompt(`조합원 ID를 입력하거나 비워두고 외부 참석자를 기록하세요.\n${examples}`, '');
+      const raw = await window.SamterUI.prompt(`조합원 ID를 입력하거나 비워두고 외부 참석자를 기록하세요.\n${examples}`, '');
       let membershipId = raw ? Number(raw) : null;
       const memberRow = members.find((row) => Number(row.id) === membershipId);
-      const name = memberRow?.name || prompt('참석자 이름'); if (!name) return;
-      const role = prompt('역할: MEMBER / CHAIR / DIRECTOR / AUDITOR / OTHER', item.meeting_type === 'BOARD' ? 'DIRECTOR' : 'MEMBER') || 'MEMBER';
+      const name = memberRow?.name || await window.SamterUI.prompt('참석자 이름'); if (!name) return;
+      const role = await window.SamterUI.prompt('역할: MEMBER / CHAIR / DIRECTOR / AUDITOR / OTHER', item.meeting_type === 'BOARD' ? 'DIRECTOR' : 'MEMBER') || 'MEMBER';
       const isPresent = confirm('출석자로 기록하시겠습니까?');
       const signer = confirm('회의록 서명자로 기록하시겠습니까?');
       item.attendees.push({id:state.nextAttendance++, membership_id:memberRow?.id || null, name_snapshot:name, attendance_role:role, is_present:isPresent, is_minutes_signer:signer, note:''});
       refresh(); notice('참석자를 추가했습니다.');
     };
-    document.querySelectorAll('[data-p12-del-attendee]').forEach((button) => button.onclick = () => {
+    document.querySelectorAll('[data-p12-del-attendee]').forEach((button) => button.onclick = async () => {
       item.attendees = item.attendees.filter((row) => Number(row.id) !== Number(button.dataset.p12DelAttendee)); refresh(); notice('참석자를 삭제했습니다.');
     });
 
     const addAgenda = document.querySelector('#p12-add-agenda');
-    if (addAgenda) addAgenda.onclick = () => {
+    if (addAgenda) addAgenda.onclick = async () => {
       const seq = Math.max(0, ...(item.agenda || []).map((row) => Number(row.sequence_no || 0))) + 1;
-      const title = prompt('안건명'); if (!title) return;
-      const description = prompt('안건 설명', '') || '';
-      const rule = prompt('의결 규칙: NORMAL / SPECIAL / CUSTOM', 'NORMAL') || 'NORMAL';
+      const title = await window.SamterUI.prompt('안건명'); if (!title) return;
+      const description = await window.SamterUI.prompt('안건 설명', '') || '';
+      const rule = await window.SamterUI.prompt('의결 규칙: NORMAL / SPECIAL / CUSTOM', 'NORMAL') || 'NORMAL';
       item.agenda.push({id:state.nextAgenda++, sequence_no:seq, title, description, resolution_rule:rule, yes_count:0, no_count:0, abstain_count:0, result:null, resolution_memo:''});
       refresh(); notice('안건을 추가했습니다.');
     };
-    document.querySelectorAll('[data-p12-edit-agenda]').forEach((button) => button.onclick = () => {
+    document.querySelectorAll('[data-p12-edit-agenda]').forEach((button) => button.onclick = async () => {
       const row = byId(item.agenda, button.dataset.p12EditAgenda); if (!row) return;
       if (item.status === 'DRAFT') return alert('의결결과는 개최 처리 후 입력할 수 있습니다.');
-      const yes = Number(prompt('찬성 수', String(row.yes_count || 0)) ?? row.yes_count); const no = Number(prompt('반대 수', String(row.no_count || 0)) ?? row.no_count); const abstain = Number(prompt('기권 수', String(row.abstain_count || 0)) ?? row.abstain_count);
+      const yes = Number(await window.SamterUI.prompt('찬성 수', String(row.yes_count || 0)) ?? row.yes_count); const no = Number(await window.SamterUI.prompt('반대 수', String(row.no_count || 0)) ?? row.no_count); const abstain = Number(await window.SamterUI.prompt('기권 수', String(row.abstain_count || 0)) ?? row.abstain_count);
       const totalVotes = yes + no + abstain;
       if (row.resolution_rule !== 'CUSTOM' && totalVotes > presentCount(item)) return alert('투표수 합계가 출석자 수를 초과할 수 없습니다.');
-      const result = prompt('결과: APPROVED / REJECTED / DEFERRED', row.result || 'APPROVED'); if (!result) return;
-      const memo = prompt('의결 메모', row.resolution_memo || '') || '';
+      const result = await window.SamterUI.prompt('결과: APPROVED / REJECTED / DEFERRED', row.result || 'APPROVED'); if (!result) return;
+      const memo = await window.SamterUI.prompt('의결 메모', row.resolution_memo || '') || '';
       if (row.resolution_rule === 'CUSTOM' && totalVotes > presentCount(item) && !memo.trim()) return alert('CUSTOM 규칙으로 출석자 수를 초과하는 경우 메모가 필요합니다.');
       row.yes_count = yes; row.no_count = no; row.abstain_count = abstain; row.result = result; row.resolution_memo = memo; refresh(); notice('의결결과를 저장했습니다.');
     });
-    document.querySelectorAll('[data-p12-del-agenda]').forEach((button) => button.onclick = () => {
+    document.querySelectorAll('[data-p12-del-agenda]').forEach((button) => button.onclick = async () => {
       item.agenda = item.agenda.filter((row) => Number(row.id) !== Number(button.dataset.p12DelAgenda)); refresh(); notice('안건을 삭제했습니다.');
     });
 
     const saveMinutes = document.querySelector('#p12-save-minutes');
-    if (saveMinutes) saveMinutes.onclick = () => { item.minutes_text = document.querySelector('#p12-minutes').value; refresh(); notice('회의록을 저장했습니다.'); };
+    if (saveMinutes) saveMinutes.onclick = async () => { item.minutes_text = document.querySelector('#p12-minutes').value; refresh(); notice('회의록을 저장했습니다.'); };
 
     const addDocument = document.querySelector('#p12-add-document');
-    if (addDocument) addDocument.onclick = () => {
-      const type = prompt('문서 유형: NOTICE / MINUTES / SIGNED_MINUTES / ATTACHMENT', 'MINUTES'); if (!type) return;
-      const filename = prompt('파일명을 입력하세요. (공개 데모는 실제 파일 대신 메타데이터만 저장)', type === 'NOTICE' ? '소집통지.pdf' : '회의록.pdf'); if (!filename) return;
+    if (addDocument) addDocument.onclick = async () => {
+      const type = await window.SamterUI.prompt('문서 유형: NOTICE / MINUTES / SIGNED_MINUTES / ATTACHMENT', 'MINUTES'); if (!type) return;
+      const filename = await window.SamterUI.prompt('파일명을 입력하세요. (공개 데모는 실제 파일 대신 메타데이터만 저장)', type === 'NOTICE' ? '소집통지.pdf' : '회의록.pdf'); if (!filename) return;
       item.documents.push({id:state.nextDocument++, document_type:type, original_filename:filename, content_type:filename.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg', file_size:120000, created_at:new Date().toISOString()});
       refresh(); notice('공개 데모 문서를 등록했습니다.');
     };
-    document.querySelectorAll('[data-p12-del-document]').forEach((button) => button.onclick = () => {
+    document.querySelectorAll('[data-p12-del-document]').forEach((button) => button.onclick = async () => {
       item.documents = item.documents.filter((row) => Number(row.id) !== Number(button.dataset.p12DelDocument)); refresh(); notice('문서를 삭제했습니다.');
     });
   }
@@ -396,7 +396,7 @@
     button.className = 'side-link';
     button.dataset.phase12Demo = '1';
     button.textContent = '총회·이사회';
-    button.onclick = () => {
+    button.onclick = async () => {
       sidebar.querySelectorAll('.side-link').forEach((item) => item.classList.remove('active'));
       button.classList.add('active');
       renderList(CURRENT_YEAR);

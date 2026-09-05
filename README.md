@@ -1,5 +1,7 @@
 # Samter Public Demo
 
+UI update: shared portal styling, searchable navigation, input dialogs, and persistent application/selection feedback. See [UI update and validation scope](UI_UX_UPDATE.md). GitHub Pages publishes the root of the `new` branch.
+
 Public GitHub Pages demo for the Samter public-work cooperative platform.
 
 Play: https://ganna40.github.io/samter-play/

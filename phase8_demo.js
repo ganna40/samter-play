@@ -43,9 +43,9 @@
     }).join('') || '<tr><td colspan="7">가입신청이 없습니다.</td></tr>';
     content.innerHTML = `<div class="page-heading"><div><span class="eyebrow">MEMBERSHIP · PUBLIC DEMO</span><h1>조합원 가입관리</h1></div><div class="today">심사대기 ${pending}건</div></div><section class="panel table-panel"><div class="section-head"><div><h2>가입 신청</h2></div><span class="count-chip">${rows.length}건</span></div><div class="table-wrap"><table><thead><tr><th>#</th><th>신청자</th><th>유형</th><th>지역</th><th>경력·기술</th><th>상태</th><th>심사</th></tr></thead><tbody>${body}</tbody></table></div></section>`;
 
-    content.querySelectorAll('[data-membership-review]').forEach((button) => button.onclick = () => update(Number(button.dataset.membershipReview), 'UNDER_REVIEW'));
-    content.querySelectorAll('[data-membership-approve]').forEach((button) => button.onclick = () => approve(Number(button.dataset.membershipApprove)));
-    content.querySelectorAll('[data-membership-reject]').forEach((button) => button.onclick = () => reject(Number(button.dataset.membershipReject)));
+    content.querySelectorAll('[data-membership-review]').forEach((button) => button.onclick = async () => update(Number(button.dataset.membershipReview), 'UNDER_REVIEW'));
+    content.querySelectorAll('[data-membership-approve]').forEach((button) => button.onclick = async () => approve(Number(button.dataset.membershipApprove)));
+    content.querySelectorAll('[data-membership-reject]').forEach((button) => button.onclick = async () => reject(Number(button.dataset.membershipReject)));
   }
 
   function update(id, status, note=null) {
@@ -66,8 +66,8 @@
     delete item.demo_password; setApps(rows); renderMembershipAdmin(); showNotice('조합원 가입을 승인했습니다.');
   }
 
-  function reject(id) {
-    const reason = prompt('반려 사유를 입력하세요.'); if (!reason) return;
+  async function reject(id) {
+    const reason = await window.SamterUI.prompt('반려 사유를 입력하세요.'); if (!reason) return;
     const rows = apps(); const item = rows.find((x) => Number(x.id) === id); if (!item) return;
     item.status = 'REJECTED'; item.review_note = reason; item.reviewed_at = new Date().toISOString(); delete item.demo_password; setApps(rows); renderMembershipAdmin(); showNotice('가입신청을 반려했습니다.');
   }
@@ -77,7 +77,7 @@
     const sidebar = document.querySelector('.sidebar');
     if (!sidebar || sidebar.querySelector('[data-membership-demo]')) return;
     const button = document.createElement('button'); button.className = 'side-link'; button.dataset.membershipDemo = '1'; button.textContent = '조합원 가입관리';
-    button.onclick = () => { sidebar.querySelectorAll('.side-link').forEach((x) => x.classList.remove('active')); button.classList.add('active'); renderMembershipAdmin(); };
+    button.onclick = async () => { sidebar.querySelectorAll('.side-link').forEach((x) => x.classList.remove('active')); button.classList.add('active'); renderMembershipAdmin(); };
     sidebar.appendChild(button);
   }
 

@@ -88,7 +88,7 @@
     const ok = snap.violation_count === 0;
     const rows = snap.members.map((item) => `<tr class="phase11-${item.band.toLowerCase()}"><td><strong>${esc(item.name)}</strong><br><small>${esc(item.membership_number || '-')}</small></td><td>${typeLabel[item.membership_type] || item.membership_type}</td><td>${Number(item.share_count || 0).toLocaleString('ko-KR')}좌</td><td><strong>${item.ratio_percent.toFixed(1)}%</strong></td><td><span class="phase11-badge phase11-${item.band.toLowerCase()}">${item.band === 'SAFE' ? '안전' : item.band === 'WARNING' ? '주의' : '기준 초과'}</span></td></tr>`).join('') || '<tr><td colspan="5">집계할 조합원이 없습니다.</td></tr>';
 
-    content.innerHTML = `<div class="page-heading"><div><span class="eyebrow">CONTRIBUTION SHARE COMPLIANCE · PUBLIC DEMO</span><h1>출자 지분 30%</h1></div><div class="today">1인 출자한도 30%</div></div>
+    content.innerHTML = `<div class="page-heading"><div><span class="eyebrow">CONTRIBUTION SHARE COMPLIANCE · PUBLIC DEMO</span><h1>출자 지분</h1></div><div class="today">1인 출자한도 30%</div></div>
       <div class="phase11-summary">
         <section class="panel"><span>전체 출자좌수</span><strong>${snap.total_share_count.toLocaleString('ko-KR')}좌</strong><small>${snap.included_member_count}명 기준</small></section>
         <section class="panel"><span>최대 출자자</span><strong>${esc(max?.name || '-')}</strong><small>${max ? max.ratio_percent.toFixed(1) + '%' : '-'}</small></section>
@@ -103,7 +103,7 @@
     if (session()?.role !== 'ADMIN') return;
     const sidebar = document.querySelector('.sidebar'); if (!sidebar || sidebar.querySelector('[data-phase11-demo]')) return;
     const button = document.createElement('button');
-    button.className = 'side-link'; button.dataset.phase11Demo = '1'; button.textContent = '출자 지분 30%';
+    button.className = 'side-link'; button.dataset.phase11Demo = '1'; button.textContent = '출자 지분';
     button.onclick = () => { sidebar.querySelectorAll('.side-link').forEach((x) => x.classList.remove('active')); button.classList.add('active'); render(); };
     sidebar.appendChild(button);
   }

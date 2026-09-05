@@ -276,7 +276,7 @@
     if (!pkg) {
       content.innerHTML = `<div class="page-heading"><div><span class="eyebrow">DISCLOSURE & ANNUAL REPORT · PUBLIC DEMO</span><h1>경영공시</h1></div><label>회계연도 <input id="phase14-year" type="number" value="${year}"></label></div><section class="panel phase14-empty"><h2>${year}년 공시 패키지가 없습니다.</h2><p>연도별 문서와 P10/P12/P13 운영데이터 Snapshot을 묶어 제출 준비 패키지를 만듭니다.</p><button class="btn btn-primary" data-p14-create>공시 패키지 만들기</button></section>`;
       document.querySelector('#phase14-year').onchange = (e) => render(Number(e.target.value || YEAR));
-      document.querySelector('[data-p14-create]').onclick = () => createPackage(year);
+      document.querySelector('[data-p14-create]').onclick = async () => createPackage(year);
       return;
     }
 
@@ -325,12 +325,12 @@
   function bind(pkg) {
     const year = pkg.fiscal_year;
     document.querySelector('#phase14-year').onchange = (e) => render(Number(e.target.value || YEAR));
-    document.querySelector('[data-p14-refresh]')?.addEventListener('click', () => {
+    document.querySelector('[data-p14-refresh]')?.addEventListener('click', async () => {
       refreshSnapshots(pkg);
       notice('P10·P12·P13·사업결과 Snapshot을 새로고침했습니다.');
       render(year);
     });
-    document.querySelector('[data-p14-prepare]')?.addEventListener('click', () => {
+    document.querySelector('[data-p14-prepare]')?.addEventListener('click', async () => {
       refreshSnapshots(pkg);
       const result = checklist(pkg);
       if (!result.ready) {
@@ -342,7 +342,7 @@
       notice('제출 준비 완료 상태로 변경했습니다.');
       render(year);
     });
-    document.querySelector('[data-p14-finalize]')?.addEventListener('click', () => {
+    document.querySelector('[data-p14-finalize]')?.addEventListener('click', async () => {
       if (pkg.status !== 'READY') return;
       refreshSnapshots(pkg);
       if (!checklist(pkg).ready) return notice('필수자료가 다시 누락되어 확정할 수 없습니다.', 'error');
@@ -353,12 +353,12 @@
       notice('공시 패키지를 확정했습니다.');
       render(year);
     });
-    document.querySelector('[data-p14-submit]')?.addEventListener('click', () => {
+    document.querySelector('[data-p14-submit]')?.addEventListener('click', async () => {
       if (pkg.status !== 'FINALIZED') return;
-      const date = prompt('외부 제출일 (YYYY-MM-DD)', `${year + 1}-03-31`);
+      const date = await window.SamterUI.prompt('외부 제출일 (YYYY-MM-DD)', `${year + 1}-03-31`);
       if (!date) return;
-      const ref = prompt('접수번호 또는 참조번호', `SAMTER-${year}-001`) || '';
-      const memo = prompt('제출 메모', '외부 공시 시스템 제출 완료') || '';
+      const ref = await window.SamterUI.prompt('접수번호 또는 참조번호', `SAMTER-${year}-001`) || '';
+      const memo = await window.SamterUI.prompt('제출 메모', '외부 공시 시스템 제출 완료') || '';
       pkg.status = 'SUBMITTED';
       pkg.external_submission_date = date;
       pkg.submission_reference = ref;
@@ -368,17 +368,17 @@
       notice('외부 제출 정보를 기록했습니다.');
       render(year);
     });
-    document.querySelector('[data-p14-edit-profile]')?.addEventListener('click', () => {
-      const name = prompt('조합명', pkg.organization_profile?.cooperative_name || '삼터 사회적협동조합');
+    document.querySelector('[data-p14-edit-profile]')?.addEventListener('click', async () => {
+      const name = await window.SamterUI.prompt('조합명', pkg.organization_profile?.cooperative_name || '삼터 사회적협동조합');
       if (!name) return;
-      const purpose = prompt('조합 목적', pkg.organization_profile?.purpose || '') ?? '';
+      const purpose = await window.SamterUI.prompt('조합 목적', pkg.organization_profile?.purpose || '') ?? '';
       pkg.organization_profile = { ...pkg.organization_profile, cooperative_name: name, purpose };
       pkg.no_separate_rules_declared = confirm('별도의 규약/규정이 없는 상태로 기록할까요?\n취소를 누르면 규약/규정 파일이 필요합니다.');
       save();
       render(year);
     });
-    document.querySelector('[data-p14-edit-narrative]')?.addEventListener('click', () => {
-      const text = prompt('연간 사업결과 설명', pkg.business_result_narrative || '');
+    document.querySelector('[data-p14-edit-narrative]')?.addEventListener('click', async () => {
+      const text = await window.SamterUI.prompt('연간 사업결과 설명', pkg.business_result_narrative || '');
       if (text === null) return;
       pkg.business_result_narrative = text;
       save();
@@ -399,23 +399,23 @@
       notice('공개 데모 문서 메타데이터를 추가했습니다.');
       render(year);
     });
-    document.querySelectorAll('[data-p14-delete-document]').forEach((button) => button.onclick = () => {
+    document.querySelectorAll('[data-p14-delete-document]').forEach((button) => button.onclick = async () => {
       pkg.documents = pkg.documents.filter((d) => Number(d.id) !== Number(button.dataset.p14DeleteDocument));
       save();
       render(year);
     });
-    document.querySelectorAll('[data-p14-doc-info]').forEach((button) => button.onclick = () => {
+    document.querySelectorAll('[data-p14-doc-info]').forEach((button) => button.onclick = async () => {
       const doc = pkg.documents.find((d) => Number(d.id) === Number(button.dataset.p14DocInfo));
       if (doc) notice(`${DOC_LABELS[doc.kind] || doc.kind}: ${doc.original_filename} · 공개 데모는 실제 파일을 저장하지 않습니다.`);
     });
-    document.querySelector('[data-p14-open-finance]')?.addEventListener('click', () => {
+    document.querySelector('[data-p14-open-finance]')?.addEventListener('click', async () => {
       document.querySelector('[data-phase13-demo]')?.click();
     });
-    document.querySelector('[data-p14-pdf]')?.addEventListener('click', () => {
+    document.querySelector('[data-p14-pdf]')?.addEventListener('click', async () => {
       notice('요약 PDF 데모: 브라우저 인쇄 화면에서 PDF로 저장할 수 있습니다.');
       window.print();
     });
-    document.querySelector('[data-p14-zip]')?.addEventListener('click', () => {
+    document.querySelector('[data-p14-zip]')?.addEventListener('click', async () => {
       const manifest = {
         demo: true,
         fiscal_year: year,
@@ -444,7 +444,7 @@
     button.className = 'side-link';
     button.dataset.phase14Demo = '1';
     button.textContent = '경영공시';
-    button.onclick = () => {
+    button.onclick = async () => {
       sidebar.querySelectorAll('.side-link').forEach((item) => item.classList.remove('active'));
       button.classList.add('active');
       render(YEAR);

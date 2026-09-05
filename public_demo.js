@@ -31,6 +31,21 @@ const DEMO = {
   ],
 };
 
+const DEMO_STATE_KEY = 'samter_public_work_state_v1';
+try {
+  const saved = JSON.parse(localStorage.getItem(DEMO_STATE_KEY) || 'null');
+  if(saved) for(const key of ['applications','reviews','settlements','publicTasks']) if(Array.isArray(saved[key])) DEMO[key] = saved[key];
+} catch { /* Keep the sample seed when browser storage is unavailable. */ }
+function persistWork() {
+  localStorage.setItem(DEMO_STATE_KEY, JSON.stringify({ applications:DEMO.applications, reviews:DEMO.reviews, settlements:DEMO.settlements, publicTasks:DEMO.publicTasks }));
+}
+const applicationStatus = status => ({APPLIED:'접수 완료 · 선정 대기',SELECTED:'선정 완료 · 업무 준비',REJECTED:'미선정',CANCELLED:'신청 취소'}[status] || status);
+function myApplications() {
+  const applications = DEMO.applications.filter(a => a.workerEmail === session.email || (!a.workerEmail && a.worker === session.name));
+  return `<section class="worker-section" id="my-applications" aria-live="polite"><div class="worker-section-head"><h2>내 신청 목록</h2><span class="count-chip">${applications.length}건</span></div><div class="producer-work-grid">${applications.map(a=>`<article class="work-card"><h3>${esc(a.task)}</h3><p><span class="status status-${a.status.toLowerCase()}">${applicationStatus(a.status)}</span></p><p>${a.status === 'SELECTED' ? '관리자에게 선정되었습니다. 안내받은 일정에 맞춰 업무를 준비해 주세요.' : a.status === 'APPLIED' ? '신청이 접수되었습니다. 관리자가 선정하면 이곳에서 확인할 수 있습니다.' : '신청 처리 결과를 확인해 주세요.'}</p>${a.appliedAt ? `<small>신청일 ${esc(new Date(a.appliedAt).toLocaleString('ko-KR'))}</small>` : ''}</article>`).join('') || '<p class="panel">아직 신청한 업무가 없습니다. 아래 모집 업무에서 신청해 보세요.</p>'}</div></section>`;
+}
+function alreadyApplied(task) { return DEMO.applications.some(a => (a.taskId === task.id || a.task === task.title) && (a.workerEmail === session.email || (!a.workerEmail && a.worker === session.name))); }
+
 const $ = (s) => document.querySelector(s);
 const esc = (v) => String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const money = (v) => `${Number(v || 0).toLocaleString('ko-KR')}원`;
@@ -78,9 +93,9 @@ const metric = (label, value, sub='') => `<article class="metric-card"><span>${l
 
 function dashboard() {
   return `<div class="metric-grid">
-    ${metric('진행 사업','3','PublicProject')}${metric('모집중 업무','7','OPEN')}${metric('신청 대기','4','APPLIED')}${metric('검수 대기','2','SUBMITTED')}
+    ${metric('진행 사업','3','시연 사업')}${metric('모집중 업무',DEMO.publicTasks.length,'신청 가능한 업무')}${metric('신청 대기',DEMO.applications.filter(a=>a.status==='APPLIED').length,'선정을 기다리는 신청')}${metric('검수 대기',DEMO.reviews.filter(r=>['SUBMITTED','UNDER_REVIEW'].includes(r.status)).length,'검수할 결과')}
   </div><div class="metric-grid">
-    ${metric('보완 요청','1','REVISION_REQUIRED')}${metric('지급 대기','3','PAYMENT_PENDING')}${metric('지급 완료','12','PAID')}${metric('총 지급 완료','2,840,000원','누적')}
+    ${metric('보완 요청',DEMO.reviews.filter(r=>r.status==='REVISION_REQUIRED').length,'보완을 기다리는 업무')}${metric('지급 대기',DEMO.settlements.filter(s=>s.status==='PAYMENT_PENDING').length,'지급할 정산')}${metric('지급 완료',DEMO.settlements.filter(s=>s.status==='PAID').length,'완료된 정산')}${metric('총 지급 완료',money(DEMO.settlements.filter(s=>s.status==='PAID').reduce((sum,s)=>sum+s.amount,0)),'시연 기록 합계')}
   </div><section class="panel phase6-dashboard"><div class="section-head"><div><span class="eyebrow">OPERATIONS</span><h2>사업별 운영 현황</h2></div></div>
     <div class="table-wrap"><table><thead><tr><th>사업</th><th>발주기관</th><th>업무수</th><th>완료율</th><th>수행자</th><th>예정 지급액</th></tr></thead><tbody>
     <tr><td><strong>2026 농촌 환경개선 사업</strong></td><td>OO시청</td><td>12</td><td>67%</td><td>8명</td><td>1,850,000원</td></tr>
@@ -124,7 +139,8 @@ function adminView() {
 
 function workerView() {
   return `<main class="producer-page"><div class="producer-hero"><div><span class="eyebrow">WORKER PORTAL · PUBLIC DEMO</span><h1>공공업무 참여</h1><p>${esc(session.name)}님이 참여 가능한 업무와 지급 현황입니다.</p></div><div class="today">${session.region || '충청북도'}</div></div>
-  <section class="worker-section"><div class="worker-section-head"><div><span class="eyebrow">OPEN TASKS</span><h2>참여 가능한 업무</h2></div><span class="count-chip">${DEMO.publicTasks.length}건</span></div><div class="producer-work-grid">${DEMO.publicTasks.map(t=>`<article class="work-card public-work-card"><div class="work-card-top"><div><div class="eyebrow">${t.project}</div><h3>${t.title}</h3></div><span class="status status-open">모집중</span></div><p>${t.region} 현장 업무 · 수행일 ${t.date}</p><div class="public-work-pay">${money(t.pay)}</div><div class="work-meta public-work-meta"><span>신청 <strong>${t.applicants}/${t.capacity}명</strong></span></div><div class="work-actions"><button class="btn btn-primary apply-task" data-id="${t.id}">내가 하겠습니다</button></div></article>`).join('')}</div></section>
+  ${myApplications()}
+  <section class="worker-section"><div class="worker-section-head"><div><span class="eyebrow">OPEN TASKS</span><h2>참여 가능한 업무</h2></div><span class="count-chip">${DEMO.publicTasks.length}건</span></div><div class="producer-work-grid">${DEMO.publicTasks.map(t=>`<article class="work-card public-work-card"><div class="work-card-top"><div><div class="eyebrow">${t.project}</div><h3>${t.title}</h3></div><span class="status status-open">모집중</span></div><p>${t.region} 현장 업무 · 수행일 ${t.date}</p><div class="public-work-pay">${money(t.pay)}</div><div class="work-meta public-work-meta"><span>신청 <strong>${t.applicants}/${t.capacity}명</strong></span></div><div class="work-actions"><button class="btn ${alreadyApplied(t) ? 'btn-secondary' : 'btn-primary'} apply-task" data-id="${t.id}" ${alreadyApplied(t) ? 'disabled' : ''}>${alreadyApplied(t) ? '신청 완료' : '내가 하겠습니다'}</button></div></article>`).join('')}</div></section>
   <section class="worker-section"><div class="worker-section-head"><div><span class="eyebrow">MY WORK</span><h2>내 업무 / 지급 현황</h2></div></div><div class="phase5-worker-grid"><article class="phase5-worker-card"><div><div class="eyebrow">APPROVED</div><h3>환경정비 업무</h3><span>검수 승인 완료</span></div><div class="phase5-worker-amount"><strong>180,000원</strong><span class="status status-payment_pending">지급대기</span></div></article><article class="phase6-bank-card"><div class="section-head"><div><span class="eyebrow">BANK ACCOUNT</span><h2>지급 계좌</h2></div></div><div class="phase6-bank-summary"><div><span>은행</span><strong>OO은행</strong></div><div><span>계좌번호</span><strong>110-***-****89</strong></div><div><span>예금주</span><strong>김수행</strong></div></div><small>실서비스에서는 암호화 저장되며 권한 있는 관리자만 원문을 조회할 수 있습니다.</small></article></div></section></main>`;
 }
 
@@ -132,6 +148,17 @@ function render() {
   renderSession();
   const app = $('#app');
   if (!session) { app.innerHTML = loginView(); bind(); return; }
+  if (session.role === 'ADMIN' && app.querySelector('.view-shell')) {
+    const template = document.createElement('template');
+    template.innerHTML = adminView();
+    const content = app.querySelector('.content');
+    const scroll = window.scrollY;
+    content.replaceChildren(...template.content.querySelector('.content').childNodes);
+    app.querySelectorAll('.side-link').forEach(button => button.classList.toggle('active', button.dataset.tab === adminTab));
+    bind();
+    window.scrollTo({top:scroll,behavior:'instant'});
+    return;
+  }
   app.innerHTML = session.role === 'ADMIN' ? adminView() : session.role === 'WORKER' ? workerView() : '<main class="content" id="phase15-portal"><p>전용 데모 화면을 불러오는 중입니다.</p></main>';
   bind();
 }
@@ -144,13 +171,29 @@ function bind() {
     setSession({ email:data.email, role:user.role, name:user.name, region:user.region });
   };
   document.querySelectorAll('.admin-tab').forEach(b => b.onclick = () => { adminTab=b.dataset.tab; render(); });
-  document.querySelectorAll('.select-app').forEach(b => b.onclick = () => { const a=DEMO.applications.find(x=>x.id==b.dataset.id); a.status='SELECTED'; notice('수행자를 선정했습니다.'); render(); });
-  document.querySelectorAll('.reject-app').forEach(b => b.onclick = () => { const a=DEMO.applications.find(x=>x.id==b.dataset.id); a.status='REJECTED'; notice('미선정 처리했습니다.'); render(); });
-  document.querySelectorAll('.approve-review').forEach(b => b.onclick = () => { const r=DEMO.reviews.find(x=>x.id==b.dataset.id); r.status='APPROVED'; notice('검수를 승인했습니다.'); render(); });
-  document.querySelectorAll('.revision-review').forEach(b => b.onclick = () => { const r=DEMO.reviews.find(x=>x.id==b.dataset.id); r.status='REVISION_REQUIRED'; notice('보완 요청을 등록했습니다.'); render(); });
-  document.querySelectorAll('.paid').forEach(b => b.onclick = () => { const s=DEMO.settlements.find(x=>x.id==b.dataset.id); s.status='PAID'; notice('지급 완료 처리했습니다.'); render(); });
-  document.querySelectorAll('.apply-task').forEach(b => b.onclick = () => { const t=DEMO.publicTasks.find(x=>x.id==b.dataset.id); t.applicants++; notice('업무 신청을 완료했습니다.'); render(); });
-  const csv=$('#csv-demo'); if(csv) csv.onclick=()=>notice('공개 데모: 지급대상 CSV 생성 동작을 시연했습니다.');
+  document.querySelectorAll('.select-app').forEach(b => b.onclick = () => { const a=DEMO.applications.find(x=>x.id==b.dataset.id); a.status='SELECTED'; notice('수행자를 선정했습니다.'); persistWork(); render(); });
+  document.querySelectorAll('.reject-app').forEach(b => b.onclick = () => { const a=DEMO.applications.find(x=>x.id==b.dataset.id); a.status='REJECTED'; notice('미선정 처리했습니다.'); persistWork(); render(); });
+  document.querySelectorAll('.approve-review').forEach(b => b.onclick = () => { const r=DEMO.reviews.find(x=>x.id==b.dataset.id); r.status='APPROVED'; notice('검수를 승인했습니다.'); persistWork(); render(); });
+  document.querySelectorAll('.revision-review').forEach(b => b.onclick = () => { const r=DEMO.reviews.find(x=>x.id==b.dataset.id); r.status='REVISION_REQUIRED'; notice('보완 요청을 등록했습니다.'); persistWork(); render(); });
+  document.querySelectorAll('.paid').forEach(b => b.onclick = () => { const s=DEMO.settlements.find(x=>x.id==b.dataset.id); s.status='PAID'; notice('지급 완료 처리했습니다.'); persistWork(); render(); });
+  document.querySelectorAll('.apply-task').forEach(b => b.onclick = () => {
+    const t=DEMO.publicTasks.find(x=>x.id==b.dataset.id);
+    if (!t || alreadyApplied(t)) return;
+    b.disabled=true;
+    DEMO.applications.push({id:Math.max(0,...DEMO.applications.map(a=>a.id))+1,taskId:t.id,task:t.title,worker:session.name,workerEmail:session.email,region:t.region,experience:'공개 데모 신청',status:'APPLIED',appliedAt:new Date().toISOString()});
+    t.applicants++;persistWork();
+    b.textContent='신청 완료'; b.classList.replace('btn-primary','btn-secondary');
+    const list=document.querySelector('#my-applications');
+    if(list)list.outerHTML=myApplications();
+    notice('신청이 접수되었습니다. 내 신청 목록에서 선정 결과를 확인하세요.');
+  });
+  const csv=$('#csv-demo'); if(csv) csv.onclick=()=>{
+    const rows = [['수행자','업무','지급금액','상태'],...DEMO.settlements.map(s=>[s.worker,s.task,s.amount,s.status])];
+    const text = '\uFEFF'+rows.map(row=>row.map(value=>'"'+String(value).replaceAll('"','""')+'"').join(',')).join('\r\n');
+    const url=URL.createObjectURL(new Blob([text],{type:'text/csv;charset=utf-8'}));
+    const a=document.createElement('a');a.href=url;a.download='samter-demo-settlements.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    notice('시연용 지급대상 CSV를 내려받았습니다.');
+  };
 }
 
 render();
