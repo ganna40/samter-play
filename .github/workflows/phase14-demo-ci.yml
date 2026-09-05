@@ -1,0 +1,19 @@
+name: Phase 14 Public Demo CI
+
+on:
+  push:
+    branches: [phase14-demo]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run public demo tests
+        run: node --test tests/*.mjs
