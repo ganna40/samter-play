@@ -8,6 +8,15 @@ Demo accounts:
 - Admin: `admin@samter.kr` / `Samter1234!`
 - Worker: `worker@samter.kr` / `Worker1234!`
 
-PHASE 8 membership onboarding and PHASE 9 membership roster/contribution flows are simulated in-browser for review. Do not enter real personal or financial information in the public demo.
+The public demo now simulates PHASE 8 through PHASE 13 flows in-browser, including membership onboarding/roster, public-interest and contribution compliance, governance, and the PHASE 13 money-flow workspace (`거래·결산`).
 
-This repository contains only the static browser demo. The FastAPI/PostgreSQL source remains in the private source repository.
+PHASE 13 demo highlights:
+- automatic vs manual transaction rows
+- yearly inflow / outflow / transaction difference
+- project filters and project money-flow summary
+- manual transaction entry/edit/delete
+- immutable automatic rows
+- irreversible fiscal-year close in demo localStorage
+- CSV export
+
+Do not enter real personal or financial information in the public demo. This repository contains only the static browser demo; the FastAPI/PostgreSQL source remains in the private source repository.
