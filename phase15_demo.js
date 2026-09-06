@@ -16,6 +16,7 @@
   let view = 'market', projectId = null;
   function root() { return document.querySelector('#phase15-portal') || document.querySelector('.content') || document.querySelector('.producer-page'); }
   function shell(title, content) {
+    delete root().dataset.documentView;
     root().innerHTML = `<div class="p15"><div class="page-heading"><div><span class="eyebrow">SAMTER · P15 PUBLIC DEMO</span><h1>${title}</h1></div></div><p class="p15-note">가상 데이터로 체험하는 공개 데모입니다. 실제 개인정보·계좌정보를 입력하지 마세요. 변경사항은 이 브라우저에만 저장됩니다.</p><div class="p15-actions">${user().role === 'WORKER' ? button('공공업무로 돌아가기','back') : ''}${user().role === 'ADMIN' ? button('마켓 관리','market') + button('기관 관리','agency') : ''}${button('P15 시연 데이터 초기화','reset')}</div>${content}</div>`;
     root().querySelectorAll('[data-p15]').forEach(b => b.onclick = async () => {
       if (b.disabled) return;
@@ -112,7 +113,7 @@
   function install() {
     const role = user().role;
     const portal = document.querySelector('#phase15-portal');
-    if (portal && !portal.querySelector('.p15')) { projectId = null; role === 'AGENCY_USER' ? agency() : market(); }
+    if (portal && !portal.dataset.documentView && !portal.querySelector('.p15')) { projectId = null; role === 'AGENCY_USER' ? agency() : market(); }
     if (role === 'ADMIN') {
       const sidebar = document.querySelector('.sidebar');
       if (!sidebar || sidebar.querySelector('[data-phase15-demo]')) return;

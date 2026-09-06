@@ -24,15 +24,28 @@ Aligned with the private development `samter-mvp` P15B baseline `347590e99d004be
 - Public-demo limits: no real authentication, money movement, server APIs, account creation, original evidence storage, or server-generated PDF. Browser roles/agency filtering demonstrate the workflow and are **not security boundaries**. All bundled data is fictional and visible in the public source. Only the two seeded agency accounts can log in; newly registered agencies can be assigned either seeded account.
 - P15 uses `samter_public_demo_phase15_v1` in localStorage. Reset affects only this key; P10/P13/P14 data is retained. Completed marketplace amounts never create cooperative finance entries or count toward public-interest metrics.
 
+## 문서함 public demo
+
+Every signed-in role has a menu named **문서함**. The demo keeps document metadata and version/review/publication history in `samter_public_demo_documents_v2` localStorage, and stores uploaded file blobs in the browser's `samter_public_demo_files_v1` IndexedDB database.
+
+- A worker can submit a quotation (`견적서`), work plan (`작업계획서`), or work result (`작업결과서`) only for an explicitly assigned public task or an order that exists in the P15 marketplace demo. The submission form opens as a modal and requires the linked task/order and a file.
+- A consumer sees only documents for public tasks explicitly linked to that demo account and marketplace orders owned by that account. The latest submitted version can be accepted or returned for revision.
+- For linked public work, consumer acceptance and cooperative administrator approval are separate steps. Public work without a linked consumer uses administrator review. Only the latest version can be reviewed or published, and another version of the same document type can be submitted only after a revision request.
+- An administrator can supervise all versions, request revision, grant final approval, and explicitly publish a selected final-approved public-work version to the agency linked to its project. Marketplace order documents remain private. Publishing a newer approved version revokes the prior published version; merely submitting a revision leaves the currently published version unchanged.
+- An agency account sees only active publications for projects currently linked to that agency. It can open or download those exact versions. Revocation removes the version from the agency view.
+- This is a browser-only workflow demonstration, not real authentication, authorization, multi-user synchronization, or server storage. Data does not move between browsers or devices. Do not upload real personal or work documents.
+
 Validation from repository root:
 
 ```sh
 node --test tests/*.test.mjs phase13_demo.test.mjs
 node --check phase15_model.js
 node --check phase15_demo.js
+node --check document_model.js
+node --check document_demo.js
 ```
 
-For browser smoke tests, install Playwright in your development environment and run `node tests/phase15_browser.cjs` with a local static server on port 8765 (or set `DEMO_URL`). Tests use an isolated browser context and fictional data.
+For browser smoke tests, install Playwright in your development environment and run `node tests/phase15_browser.cjs` and `node tests/document_browser.cjs` with a local static server on port 8765 (or set `DEMO_URL`). Tests use an isolated browser context and fictional data.
 
 The public demo now simulates PHASE 8 through PHASE 14 flows in-browser, including membership onboarding/roster, public-interest and contribution compliance, governance, the PHASE 13 money-flow workspace (`거래·결산`), and the PHASE 14 disclosure workspace (`경영공시`).
 

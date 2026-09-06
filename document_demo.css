@@ -1,0 +1,30 @@
+.document-vault { max-width: 1200px; margin: 0 auto; }
+.document-demo-note { margin: 18px 0 24px; padding: 16px 18px; border-left: 4px solid #2463eb; border-radius: 0 10px 10px 0; background: #eef4ff; color: #344b68; line-height: 1.65; }
+.document-toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.document-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+.document-summary article { padding: 18px; border: 1px solid #dce4f0; border-radius: 14px; background: #fff; }
+.document-summary span, .document-meta, .document-history { color: #607087; font-size: 13px; }
+.document-summary strong { display: block; margin-top: 4px; font-size: 24px; }
+.document-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.document-card { display: flex; min-width: 0; flex-direction: column; gap: 10px; padding: 20px; border: 1px solid #dce4f0; border-radius: 14px; background: #fff; }
+.document-card h3 { margin: 0; overflow-wrap: anywhere; font-size: 18px; }
+.document-card p { margin: 0; line-height: 1.55; }
+.document-card-head, .document-card-actions { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.document-card-actions { justify-content: flex-start; margin-top: auto; }
+.document-status { display: inline-flex; align-items: center; min-height: 28px; padding: 4px 9px; border-radius: 999px; background: #edf2f7; color: #3e5066; font-size: 12px; font-weight: 700; }
+.document-status-approved, .document-status-published { background: #e9f7ef; color: #17643a; }
+.document-status-submitted { background: #eaf2ff; color: #174ea6; }
+.document-status-revision_required { background: #fff2e5; color: #9a4b00; }
+.document-empty { padding: 36px 20px; border: 1px dashed #bdcad9; border-radius: 14px; color: #607087; text-align: center; }
+.document-dialog { width: min(560px, calc(100vw - 32px)); border: 0; border-radius: 16px; padding: 0; box-shadow: 0 22px 70px rgba(25, 45, 75, .24); }
+.document-dialog::backdrop { background: rgba(15, 31, 52, .5); }
+.document-dialog form { display: grid; gap: 16px; padding: 24px; }
+.document-dialog h2 { margin: 0; }
+.document-dialog label { display: grid; gap: 7px; font-weight: 700; }
+.document-dialog select, .document-dialog input[type=file] { width: 100%; padding: 11px; border: 1px solid #bdcad9; border-radius: 8px; background: #fff; }
+.document-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+@media (max-width: 700px) {
+  .document-summary { grid-template-columns: 1fr; }
+  .document-grid { grid-template-columns: 1fr; }
+  .document-card { padding: 16px; }
+}
