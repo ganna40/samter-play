@@ -4,6 +4,14 @@ UI update: shared portal styling, searchable navigation, input dialogs, and pers
 
 Public GitHub Pages demo for the Samter public-work cooperative platform.
 
+## 기관 안내와 삼터 브랜드
+
+공개 사이트에는 기관소개, 연혁, 기관장 소개, 오시는 길, 이용약관 초안, 개인정보 처리 안내 페이지가 포함됩니다. 현재 확정된 기관 정보는 기관명 `ㅇㅇ사회적협동조합`과 대표자 `염광선`뿐입니다. 주소, 사업자등록번호, 연락처, 설립일, 연혁, 대표자 약력은 임의로 채우지 않고 `정보 준비 중`으로 표시합니다.
+
+삼터 심볼은 Codex 내장 이미지 생성 도구로 새로 만들었으며, 이미지 옆에 실제 텍스트 `삼터`를 함께 표시합니다. 원본 정보, 생성 프롬프트와 사용 원칙은 [BRAND_ASSET.md](./BRAND_ASSET.md)에 기록했습니다.
+
+정책 페이지는 공개 데모와 정식 서비스를 구분합니다. 이 GitHub Pages 데모의 입력값과 파일은 브라우저 `localStorage`와 `IndexedDB`에 저장되며 실제 인증 또는 권한 경계가 아닙니다. 실제 개인정보와 업무 문서를 입력하거나 업로드하면 안 됩니다.
+
 Play: https://ganna40.github.io/samter-play/
 
 Demo accounts:
@@ -59,6 +67,6 @@ PHASE 14 demo highlights:
 - summary PDF flow and ZIP package-structure simulation
 - external submission date/reference memo recording
 
-The public demo uses browser localStorage and does not submit anything to government systems. Uploaded document controls store metadata only; the private FastAPI/PostgreSQL implementation performs actual file storage and PDF/ZIP generation.
+The public demo uses browser localStorage and does not submit anything to government systems. PHASE 14 disclosure upload controls store metadata only; the document box and attachment demos keep selected file blobs in browser IndexedDB. The private FastAPI/PostgreSQL implementation performs actual server-side file storage and PDF/ZIP generation.
 
 Do not enter real personal or financial information in the public demo. This repository contains only the static browser demo; the FastAPI/PostgreSQL source remains in the private source repository.

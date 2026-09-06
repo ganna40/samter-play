@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="삼터 공개 데모 개인정보 처리방침 초안"><title>개인정보 처리방침 초안 | 삼터</title><link rel="stylesheet" href="./site_info.css"><script type="module" src="./site_info.js"></script></head>
+<body class="institution-page"><div data-samter-site-header></div><main>
+  <section class="info-hero"><span class="info-kicker">PRIVACY</span><h1>개인정보 처리 안내</h1><p>GitHub Pages에서 실행되는 삼터 공개 데모가 브라우저 안에서 데이터를 다루는 방식을 설명합니다.</p></section>
+  <div class="info-content"><div class="draft-banner"><strong>운영 전 검토용 초안 · 실제 정보를 입력하지 마세요</strong>이 데모에는 실제 회원 인증, 서버 데이터베이스, 보안 권한 경계가 없습니다. 이름·연락처·주소·비밀번호·업무 문서 등 실제 개인정보나 기밀 자료를 입력하거나 올리지 마세요. 정식 서비스의 개인정보 처리방침은 운영 구조 확정 후 별도로 마련해야 합니다.</div>
+    <div class="policy-layout"><nav class="policy-index" aria-label="처리방침 목차"><a href="#purpose">처리 목적·항목</a><a href="#retention">보유기간</a><a href="#sharing">제공·위탁</a><a href="#files">제출 파일</a><a href="#rights">이용자 권리</a><a href="#security">안전조치</a><a href="#contact">문의</a></nav>
+      <section class="policy-body">
+        <article id="purpose"><h2>1. 공개 데모가 저장하는 항목</h2><table class="policy-table"><thead><tr><th>구분</th><th>브라우저에 저장되는 데모 항목</th><th>저장 위치</th></tr></thead><tbody>
+          <tr><td>화면 세션</td><td>선택한 샘플 계정과 역할</td><td>localStorage</td></tr>
+          <tr><td>가입 신청 체험</td><td>폼에 입력한 이름, 이메일, 데모 비밀번호, 연락처, 주소, 지역, 동기·기술과 동의 값</td><td>localStorage</td></tr>
+          <tr><td>업무·주문 체험</td><td>신청·선정·검수·주문·정산 등 데모 상태와 입력 내용</td><td>localStorage</td></tr>
+          <tr><td>문서함 체험</td><td>문서 메타데이터·검토 이력과 사용자가 선택한 파일</td><td>localStorage 및 IndexedDB</td></tr>
+        </tbody></table></article>
+        <article id="retention"><h2>2. 보관과 삭제</h2><p>입력값과 파일은 이 데모의 서버로 전송되지 않고 사용 중인 브라우저 저장소에 남습니다. 브라우저의 사이트 데이터 삭제 기능이나 데모 초기화 기능을 사용하면 삭제할 수 있습니다. 브라우저·기기를 바꾸면 데이터가 동기화되지 않습니다. 정식 서비스의 보유기간은 확정 전입니다.</p></article>
+        <article id="sharing"><h2>3. 외부 제공과 호스팅</h2><p>데모 입력값을 삼터 애플리케이션 서버나 다른 이용자에게 보내지 않습니다. 다만 페이지 자체는 GitHub Pages가 제공하므로 페이지 요청과 관련된 기술 정보는 호스팅 제공자의 정책에 따라 처리될 수 있습니다. 정식 서비스의 처리위탁·제3자 제공 여부는 <span class="pending">정보 준비 중</span>입니다.</p></article>
+        <article id="files"><h2>4. 문서와 역할 화면</h2><p>업로드한 파일은 현재 브라우저의 IndexedDB에만 저장됩니다. 화면의 역할 선택과 문서 공개·검토 표시는 기능 시연이며 실제 인증이나 권한 경계가 아닙니다. 모든 샘플 계정과 기본 데이터는 공개 소스에서 확인할 수 있습니다.</p></article>
+        <article id="rights"><h2>5. 이용자가 할 수 있는 조치</h2><p>실제 정보를 입력하지 않는 것이 우선입니다. 이미 입력했다면 브라우저 설정에서 이 사이트의 localStorage와 IndexedDB를 포함한 사이트 데이터를 삭제하세요. 정식 서비스의 열람·정정·삭제·처리정지 요청 절차는 운영 전 마련합니다.</p></article>
+        <article id="security"><h2>6. 보안에 관한 한계</h2><p>공개 데모의 가입 폼 값과 데모 비밀번호는 브라우저 체험 상태로 저장되며 서버의 비밀번호 해시 보호를 받지 않습니다. 이 화면을 실제 계정, 개인정보 또는 기밀 파일 보관 용도로 사용하면 안 됩니다.</p></article>
+        <article id="contact"><h2>7. 보호책임자와 문의</h2><p>개인정보 보호책임자, 담당 부서, 전화번호와 이메일은 모두 <span class="pending">정보 준비 중</span>입니다. 정식 방침에는 시행일과 변경 이력도 함께 표시합니다.</p><p>작성 기준 참고: <a href="https://www.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217&amp;mCode=D010030000&amp;nttId=11134" rel="noreferrer">개인정보보호위원회 개인정보 처리방침 작성지침</a> · <a href="https://www.law.go.kr/lsLawLinkInfo.do?chrClsCd=010202&amp;lsJoLnkSeq=900078922" rel="noreferrer">개인정보 보호법 제30조</a></p></article>
+      </section>
+    </div>
+  </div>
+</main><div data-samter-site-footer></div></body></html>
