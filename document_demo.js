@@ -37,9 +37,12 @@
         const linked = phase15.projects.find(item => item.id === project.id);
         if (linked) project.agencyId = linked.agencyId;
       });
+      phase15.projects.forEach(project => {
+        if (!state.projects.some(item => item.id === project.id)) state.projects.push({ id: project.id, agencyId: project.agencyId, title: project.title });
+      });
       if (Array.isArray(phase15.orders)) phase15.orders.forEach(order => {
         const id = `order-${order.id}`;
-        if (!state.scopes.some(item => item.id === id)) state.scopes.push({ id, kind: 'MARKET_ORDER', title: `${order.title} 주문 #${order.id}`, workerEmail: 'worker@samter.kr', consumerEmail: 'consumer@samter.kr' });
+        if (!state.scopes.some(item => item.id === id) && order.workerEmail && order.consumerEmail) state.scopes.push({ id, kind: 'MARKET_ORDER', title: `${order.title} 주문 #${order.id}`, workerEmail: order.workerEmail, consumerEmail: order.consumerEmail });
       });
     } catch { /* Seeded links remain available. */ }
   }
